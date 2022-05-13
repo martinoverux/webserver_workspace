@@ -95,6 +95,4 @@ public class jdbcConnectionTestServlet extends HttpServlet {
 			System.out.println("> 자원반납 성공!");
 		}
 	}
-	
-
 }
