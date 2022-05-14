@@ -3,8 +3,37 @@
 <%@page import="member.model.dto.Member"%>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <%
-	Member infoMember = (Member) session.getAttribute("infoMember");
+	Member infoMember = (Member) session.getAttribute("loginMember");
+    String[] hobbyArr = infoMember.getHobby().split(",");
 %>
+<script>
+window.onload = () => {
+<% if(infoMember.getGender().equals("M")){ %>
+		document.querySelector("#gender0").checked = true;
+<% } 
+   else {%>
+ 		document.querySelector("#gender1").checked = true;
+<% } %>
+
+<% for(int i = 0; i < hobbyArr.length; i++) { %>
+	<% if(hobbyArr[i].equals("운동")) { %>
+			document.querySelector("#hobby0").checked = true;		
+	<% } %>
+	<% if(hobbyArr[i].equals("등산")) { %>
+			document.querySelector("#hobby1").checked = true;
+	<% } %>
+	<% if(hobbyArr[i].equals("독서")) { %>
+			document.querySelector("#hobby2").checked = true;	
+	<% } %>
+	<% if(hobbyArr[i].equals("게임")) { %>
+			document.querySelector("#hobby3").checked = true;
+	<% } %>
+	<% if(hobbyArr[i].equals("여행")) { %>
+			document.querySelector("#hobby4").checked = true;		
+	<% } %>
+<% } %>
+}
+</script>
 <section id=enroll-container>
 	<h2>회원 정보</h2>
 	<form name="memberUpdateFrm" method="post">
