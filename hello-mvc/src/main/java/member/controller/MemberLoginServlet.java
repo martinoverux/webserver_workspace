@@ -2,9 +2,9 @@ package member.controller;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +32,10 @@ public class MemberLoginServlet extends HttpServlet {
 		// 2. 사용자입력값 처리
 		String memberId = request.getParameter("memberId");
 		String password = request.getParameter("password");
+		String saveId = request.getParameter("saveId"); // "on" || null
 		System.out.println("memberId@MemberLoginServlet = " + memberId);
 		System.out.println("password@MemberLoginServlet = " + password);
+		System.out.println("password@MemberLoginServlet = " + saveId);
 		
 		// 3. 업무로직
 		Member member = memberService.findByMemberId(memberId);
@@ -47,14 +49,24 @@ public class MemberLoginServlet extends HttpServlet {
 		
 		if(member != null && password.equals(member.getPassword())) {
 			// 로그인 성공!
-		
-			System.out.println(session.getId()); // JSESSIONID 동일
 			session.setAttribute("loginMember", member);
+			
+			// saveId 쿠키 처리
+			Cookie cookie = new Cookie("saveId", memberId);
+			cookie.setPath(request.getContextPath()); // /mvc로 시작하는 경로에 이 쿠키를 사용함.
+			if(saveId != null) {	
+				// max-age 설정이 없다면, 세션쿠키로 등록. 브라우져 종료 시 폐기
+				// max-age 설정이 있다면, 영속쿠키로 등록. 지정한 시각에 폐기
+				cookie.setMaxAge(7 * 24 * 60 * 60); // 초단위 일주일 후 폐기
+			}
+			else {
+				cookie.setMaxAge(0); // 유효기간을 0으로 만들어서 쿠키 즉시 삭제
+			}
+			response.addCookie(cookie);
 		}
 		else {
 			// 로그인 실패!
 			session.setAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
-			
 		}
 		
 		// 4. 응답처리 : 리다이렉트
