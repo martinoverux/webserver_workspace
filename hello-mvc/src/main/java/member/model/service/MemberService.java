@@ -22,7 +22,6 @@ public class MemberService {
 		Connection conn = getConnection();
 		Member member = memberDao.findByMemberId(conn, memberId);
 		close(conn);
-		
 		return member;
 	}
 
@@ -31,6 +30,21 @@ public class MemberService {
 		Connection conn = getConnection();
 		try {
 			result = memberDao.insertMember(conn, member);
+			commit(conn);
+		} catch (Exception e) {
+			rollback(conn);
+			throw e; // controller에게 전달
+		} finally {
+			close(conn);
+		}
+		return result;
+	}
+
+	public int updateMember(Member member) {
+		int result = 0;
+		Connection conn = getConnection();
+		try {
+			result = memberDao.updateMember(conn, member);
 			commit(conn);
 		} catch (Exception e) {
 			rollback(conn);

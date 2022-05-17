@@ -19,7 +19,7 @@ public class MemberDao {
 	public MemberDao() {
 		// buildpath의 sql/member-query.properties 파일의 내용 불러오기
 		String fileName = MemberDao.class.getResource("/sql/member-query.properties").getPath();
-		System.out.println("filename@MemberDao = " + fileName);
+//		System.out.println("filename@MemberDao = " + fileName);
 		try {
 			prop.load(new FileReader(fileName));
 		} catch (IOException e) {
@@ -87,6 +87,39 @@ public class MemberDao {
 		} catch (SQLException e) {
 			throw new MemberException("회원가입 오류", e);
 		}finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	/**
+	 * updateMember = update member 
+	 * set member_name = ?, gender = ?,  birthday = ?, email = ?, phone = ?, address = ?, hobby = ? 
+	 * where member_id = ?
+	 * 
+	 */
+	public int updateMember(Connection conn, Member member) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("updateMember");
+		try {
+			// 1. pstmt객체 생성 & 미완성쿼리 값대입
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getMemberName());
+			pstmt.setString(2, member.getGender());
+			pstmt.setDate(3, member.getBirthday());
+			pstmt.setString(4, member.getEmail());
+			pstmt.setString(5, member.getPhone());
+			pstmt.setString(6, member.getAddress());
+			pstmt.setString(7, member.getHobby());
+			pstmt.setString(8, member.getMemberId());
+
+			// 2. 실행
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new MemberException("회원정보수정 오류", e);
+		} finally {
+			// 3. 자원반납 - pstmt
 			close(pstmt);
 		}
 		return result;

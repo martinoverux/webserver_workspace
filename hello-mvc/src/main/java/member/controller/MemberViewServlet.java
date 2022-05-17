@@ -24,16 +24,9 @@ public class MemberViewServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 로그인 후에만 접근 가능하도록함
-		HttpSession session = request.getSession();
-		Member loginMember = (Member) session.getAttribute("loginMember");
-		if(loginMember == null) {
-			response.sendRedirect(request.getContextPath() + "/");			
-		}
-		else {
+
 			String myPage = "/WEB-INF/views/member/memberView.jsp";
 			RequestDispatcher view = request.getRequestDispatcher(myPage);
 			view.forward(request, response);
-		}
 	}
 }

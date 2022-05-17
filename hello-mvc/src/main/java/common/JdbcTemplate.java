@@ -28,14 +28,14 @@ public class JdbcTemplate {
 			// buildpath의 datasource.properties 참조하기
 			// getResource의 /는 buildpath(/WEB-INF/classes)를 의미한다.
 			String fileName = JdbcTemplate.class.getResource("/datasource.properties").getPath();
-			System.out.println("fileName@JdbcTemplate = " + fileName);
+//			System.out.println("fileName@JdbcTemplate = " + fileName);
 			prop.load(new FileReader(fileName));
 			
 			driverClass = prop.getProperty("driverClass");
 			url = prop.getProperty("url");
 			user = prop.getProperty("user");
 			password = prop.getProperty("password");
-			System.out.println("> 설정정보 로드 완료!");
+//			System.out.println("> 설정정보 로드 완료!");
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
