@@ -100,13 +100,14 @@
         <input type="button" onclick="deleteMember();" value="탈퇴"/>
 	</form>
 </section>
-<script>
-/* const updateMember = () => {
-	document.memberUpdateFrm.submit();
-}; */
 
-const deleteMember = () => { //post 방식으로 처리하기
-	
+<script>
+
+const deleteMember = () => { 
+	const title = "Popup";
+	const spec = "width=300px, height=200px";
+	const popup = open("<%= request.getContextPath() %>/member/deleteMember", title, spec);
+
 }
 
 

@@ -50,10 +50,18 @@ public class LoginFilter implements Filter {
 		HttpSession session = httpReq.getSession();
 		Member loginMember = (Member) session.getAttribute("loginMember");
 		if(loginMember == null) {
-			String msg = "로그인 후에 확인할 수 있습니다.";
-			session.setAttribute("msg", msg);
-			httpRes.sendRedirect(httpReq.getContextPath() + "/");		
-			return; // 조기리턴
+			String msg1 = (String) session.getAttribute("msg");
+			if(msg1 != null) {
+				httpRes.sendRedirect(httpReq.getContextPath() + "/");		
+				return; // 조기리턴
+			}
+			else {
+				String msg = "로그인 후에 확인할 수 있습니다.";
+				session.setAttribute("msg", msg);
+				httpRes.sendRedirect(httpReq.getContextPath() + "/");		
+				return; // 조기리턴
+			}
+			
 		}
 
 		chain.doFilter(request, response);

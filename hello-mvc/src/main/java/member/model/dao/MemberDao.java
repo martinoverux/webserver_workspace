@@ -125,4 +125,21 @@ public class MemberDao {
 		return result;
 	}
 
+	public int deleteMember(Connection conn, Member member) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("deleteMember");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getMemberId());
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new MemberException("회원 탈퇴 오류", e);
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
 }

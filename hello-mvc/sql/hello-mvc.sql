@@ -55,27 +55,7 @@ create table member (
  select * from member;
  commit;
  
- update member
- set password = 'pPQhE2dz1CciUwfgsxBAKT7P5Ji9ppMEm8jDiraEVewDeV/QbRypPSQC6YK+qNITJLl73kXlHFY4yulpV0jxzA=='
- where member_id = 'honggd';
+ 
+ 
 
- update member
- set password = ''
- where member_id = 'qwerty';
-
- update member
- set password = ''
- where member_id = 'admin;
- 
-  update member
- set password = ''
- where member_id = 'sinsa';
- 
-  update member
- set password = ''
- where member_id = 'kkk123';
- 
-  update member
- set password = ''
- where member_id = 'sejong';
 
