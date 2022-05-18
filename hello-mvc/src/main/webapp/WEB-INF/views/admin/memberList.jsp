@@ -25,22 +25,22 @@
         <div id="search-memberId" class="search-type">
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="member_id"/>
-                <input type="text" name="searchKeyword"  size="25" placeholder="검색할 아이디를 입력하세요."/>
+                <input type="text" name="searchKeyword" id="input-id" size="25" placeholder="검색할 아이디를 입력하세요."/>
                 <button type="submit">검색</button>            
             </form>    
         </div>
         <div id="search-memberName" class="search-type">
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="member_name"/>
-                <input type="text" name="searchKeyword" size="25" placeholder="검색할 이름을 입력하세요."/>
+                <input type="text" name="searchKeyword" id="input-name" size="25" placeholder="검색할 이름을 입력하세요."/>
                 <button type="submit">검색</button>            
             </form>    
         </div>
         <div id="search-gender" class="search-type">
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="gender"/>
-                <input type="radio" name="searchKeyword" value="M" checked> 남
-                <input type="radio" name="searchKeyword" value="F"> 여
+                <input type="radio" name="searchKeyword" id="input-m" value="M" checked> 남
+                <input type="radio" name="searchKeyword" id="input-f" value="F"> 여
                 <button type="submit">검색</button>
             </form>
         </div>
@@ -103,14 +103,22 @@
 	<input type="hidden" name = "memberId" />		
 	<input type="hidden" name = "memberRole" />		
 </form>
+
+
 <script>
-updateMemberRoleFrm.addEventListener('submit', (e) => {
-	const {value} = e.target;  
+<% 
+String type =  request.getParameter("searchType"); 
+String keyword = request.getParameter("searchKeyword"); 
+System.out.println(type);
+System.out.println(keyword);
+ if(type != null && keyword != null){  
+%>
 	document.querySelectorAll(".search-type").forEach((div) => {
 		div.style.display ="none";
 	});
 	let id = "";
-	switch(value){
+	const typeVal = "<%= type %>";
+	switch(typeVal){
 	case "member_id": 
 		id = "search-memberId";
 		break;
@@ -122,9 +130,31 @@ updateMemberRoleFrm.addEventListener('submit', (e) => {
 		break;
 	}
 	document.querySelector(`#\${id}`).style.display = "inline-block";
+	document.querySelector("#searchType").value = typeVal;
 	
-});
-});
+	
+	const keywordVal = "<%= keyword %>";
+	let genderVal = "";
+	switch(typeVal){
+	case "member_id": 
+		document.querySelector("#input-id").value = keywordVal;
+		break;
+	case "member_name": 
+		document.querySelector("#input-name").value = keywordVal;
+		break;
+	case "gender":
+		genderVal = keywordVal;
+		break;
+	}
+	if(genderVal && genderVal == "M"){
+		document.querySelector("#input-m").checked = true;
+	}
+	else {
+		document.querySelector("#input-f").checked = true 
+		document.querySelector("#input-m").checked = false;		
+	}
+<% }%>
+
 searchType.addEventListener('change', (e) => {
 	const {value} = e.target; // 구조분해 할당
 	document.querySelectorAll(".search-type").forEach((div) => {
@@ -143,6 +173,7 @@ searchType.addEventListener('change', (e) => {
 		break;
 	}
 	document.querySelector(`#\${id}`).style.display = "inline-block";
+
 });
 
 
