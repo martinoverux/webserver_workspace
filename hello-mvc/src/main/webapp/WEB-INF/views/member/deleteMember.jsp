@@ -24,14 +24,10 @@ div#delteMember-container{text-align:center; padding-top:50px;}
 	<input type="hidden" name="deleteMember" />
 </form>
 <script>
-
 const deleteMember = () => { //post 방식으로 처리하기
-
 	const frm = document.deleteMemberFrm;
 	frm.submit();
-
 }
-
 const closePopup = () => {
 			self.close(); 
 };

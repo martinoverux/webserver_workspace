@@ -1,12 +1,16 @@
 package member.model.dao;
 
 import static common.JdbcTemplate.close;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import member.model.dto.Member;
@@ -41,27 +45,33 @@ public class MemberDao {
 			// 2. 실행 및 rset 처리
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
-				member = new Member();
-				member.setMemberId(rset.getString("member_id"));
-				member.setPassword(rset.getString("password"));
-				member.setMemberName(rset.getString("member_name"));
-				// "U" -> MemberRole.U, "A" -> MemberRole.A 변환
-				member.setMemberRole(MemberRole.valueOf(rset.getString("member_role")));
-				member.setGender(rset.getString("gender"));
-				member.setBirthday(rset.getDate("birthday"));
-				member.setEmail(rset.getString("email"));
-				member.setPhone(rset.getString("phone"));
-				member.setAddress(rset.getString("address"));
-				member.setHobby(rset.getString("hobby"));
-				member.setEnrollDate(rset.getDate("enroll_date"));
+				member = handleMemberResultSet(rset);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			// 3. 자원 반납(rset, pstmt)
 			close(rset);
 			close(pstmt);
 		}
+		return member;
+	}
+
+	private Member handleMemberResultSet(ResultSet rset) throws SQLException {
+		Member member;
+		member = new Member();
+		member.setMemberId(rset.getString("member_id"));
+		member.setPassword(rset.getString("password"));
+		member.setMemberName(rset.getString("member_name"));
+		// "U" -> MemberRole.U, "A" -> MemberRole.A 변환
+		member.setMemberRole(MemberRole.valueOf(rset.getString("member_role")));
+		member.setGender(rset.getString("gender"));
+		member.setBirthday(rset.getDate("birthday"));
+		member.setEmail(rset.getString("email"));
+		member.setPhone(rset.getString("phone"));
+		member.setAddress(rset.getString("address"));
+		member.setHobby(rset.getString("hobby"));
+		member.setEnrollDate(rset.getDate("enroll_date"));
 		return member;
 	}
 
@@ -84,7 +94,7 @@ public class MemberDao {
 			pstmt.setString(10, member.getHobby());
 			
 			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new MemberException("회원가입 오류", e);
 		}finally {
 			close(pstmt);
@@ -134,7 +144,7 @@ public class MemberDao {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, member.getMemberId());
 			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			throw new MemberException("회원 탈퇴 오류", e);
 		} finally {
 			close(pstmt);
@@ -142,4 +152,89 @@ public class MemberDao {
 		return result;
 	}
 
+	public int updatePassword(Connection conn, Member member) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updatePassword");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getPassword());
+			pstmt.setString(2, member.getMemberId());
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new MemberException("비밀번호 수정 오류", e);
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	/**
+	 * 1건 조회 시 member 객체 하나 또는 null 리턴
+	 * n건 조회 시 여러 건의 member 객체를 가진 list 또는 빈 list 
+	 * 
+	 */
+	public List<Member> findAll(Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<Member> list = new ArrayList<>();
+		String sql = prop.getProperty("findAll");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				Member member = handleMemberResultSet(rset);
+				list.add(member);
+			}
+		} catch (Exception e) {
+			throw new MemberException("관리자 회원목록 조회 오류", e);
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return list;
+	}
+
+	public int updateMemberRole(Connection conn, Member member) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateMemberRole");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, String.valueOf(member.getMemberRole()));
+			pstmt.setString(2, member.getMemberId());
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new MemberException("회원 권한 변경 오류", e);
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public List<Member> findBy(Connection conn, Map<String, String> param) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<Member> list = new ArrayList<>();
+		String sql = prop.getProperty("findBy");
+		sql = sql.replace("#", param.get("searchType"));
+		System.out.println("sql = " + sql);
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%" + param.get("searchKeyword") + "%");
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				Member member = handleMemberResultSet(rset);
+				list.add(member);
+			}
+		} catch (Exception e) {
+			throw new MemberException("관리자 회원검색 오류", e);
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return list;
+	}
 }

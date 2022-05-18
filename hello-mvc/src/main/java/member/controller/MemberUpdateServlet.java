@@ -51,7 +51,7 @@ public class MemberUpdateServlet extends HttpServlet {
 			// 3. 업무로직 - service에 updateMember 요청
 			int result = memberService.updateMember(member);
 			String msg = "회원정보를 성공적으로 수정했습니다."; 
-			
+
 			// session 정보 갱신
 			Member updateMember = memberService.findByMemberId(memberId);
 			request.getSession().setAttribute("loginMember", updateMember);
