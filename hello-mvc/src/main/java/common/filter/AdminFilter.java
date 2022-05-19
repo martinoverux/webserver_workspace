@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import member.model.dto.Member;
+import member.model.dto.MemberRole;
 
 /**
  * Servlet Filter implementation class AdminFilter
@@ -47,7 +48,7 @@ public class AdminFilter implements Filter {
 		
 		HttpSession session = httpReq.getSession();
 		Member loginMember = (Member) session.getAttribute("loginMember");
-		if(loginMember == null || loginMember.getMemberId().equals("admin") == false) {
+		if(loginMember == null ||  loginMember.getMemberRole() != MemberRole.A ) {
 				String msg = "관리자만 확인할 수 있습니다.";
 				session.setAttribute("msg", msg);
 				httpRes.sendRedirect(httpReq.getContextPath() + "/");		

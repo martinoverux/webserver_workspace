@@ -12,6 +12,9 @@
     div#search-memberId {display: inline-block;}
     div#search-memberName{display:none;}
     div#search-gender{display:none;}
+    <%-- div#search-memberId {display:<%= "member_id".equals(searchType) || searchType == null ? "inline-block" : "none" %>;}
+	div#search-memberName {display:<%= "member_name".equals(searchType) ? "inline-block" : "none" %>;}
+	div#search-gender {display:<%= "gender".equals(searchType) ? "inline-block" : "none" %>;} --%>
 </style>
 <section id="memberList-container">
 	<h2>회원관리</h2>
@@ -21,11 +24,15 @@
             <option value="member_id">아이디</option>        
             <option value="member_name">회원명</option>
             <option value="gender">성별</option>
+<%--        <option value="member_id" <%="member_id".equals(searchType)?"selected":""%>>아이디</option>		
+			<option value="member_name" <%="member_name".equals(searchType)?"selected":""%>>회원명</option>
+			<option value="gender" <%="gender".equals(searchType)?"selected":""%>>성별</option> --%>
         </select>
         <div id="search-memberId" class="search-type">
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="member_id"/>
                 <input type="text" name="searchKeyword" id="input-id" size="25" placeholder="검색할 아이디를 입력하세요."/>
+   <%--         <input type="text" name="searchKeyword"  size="25" placeholder="검색할 아이디를 입력하세요." value="<%= "member_id".equals(searchType) ? searchKeyword : "" %>"/> --%>
                 <button type="submit">검색</button>            
             </form>    
         </div>
@@ -33,6 +40,7 @@
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="member_name"/>
                 <input type="text" name="searchKeyword" id="input-name" size="25" placeholder="검색할 이름을 입력하세요."/>
+  <%--          <input type="text" name="searchKeyword" size="25" placeholder="검색할 이름을 입력하세요." value="<%= "member_name".equals(searchType) ? searchKeyword : "" %>"/> --%>
                 <button type="submit">검색</button>            
             </form>    
         </div>
@@ -41,6 +49,8 @@
                 <input type="hidden" name="searchType" value="gender"/>
                 <input type="radio" name="searchKeyword" id="input-m" value="M" checked> 남
                 <input type="radio" name="searchKeyword" id="input-f" value="F"> 여
+  <%--          <input type="radio" name="searchKeyword" value="M" <%="gender".equals(searchType) && "M".equals(searchKeyword)?"checked":""%>> 남
+                <input type="radio" name="searchKeyword" value="F" <%="gender".equals(searchType) && "F".equals(searchKeyword)?"checked":""%>> 여 --%>
                 <button type="submit">검색</button>
             </form>
         </div>
@@ -109,8 +119,6 @@
 <% 
 String type =  request.getParameter("searchType"); 
 String keyword = request.getParameter("searchKeyword"); 
-System.out.println(type);
-System.out.println(keyword);
  if(type != null && keyword != null){  
 %>
 	document.querySelectorAll(".search-type").forEach((div) => {
