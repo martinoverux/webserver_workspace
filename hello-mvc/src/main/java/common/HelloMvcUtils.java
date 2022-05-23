@@ -35,4 +35,58 @@ public class HelloMvcUtils {
 		Encoder encoder = Base64.getEncoder();
 		return encoder.encodeToString(encrypted);
 	}
+
+	/**
+	 * 
+	 * @param cPage
+	 * @param numPerPage 
+	 * @param totalContents 
+	 * @param url  /mvc/admin/memberList
+	 * @return
+	 */
+	public static String getPageBar(int cPage, int numPerPage, int totalContents, String url) {
+		StringBuilder pagebar = new StringBuilder();
+		int totalPages = (int)(Math.ceil((double)totalContents / numPerPage)); // 전체 페이지 수
+		int pagebarSize = 5;
+		int pagebarStart = (cPage -1) / pagebarSize * pagebarSize + 1;
+		int pagebarEnd = pagebarStart + pagebarSize - 1;
+		int pageNo = pagebarStart;
+		
+		url += "?cPage=";
+		
+		// 이전 prev
+		if(pageNo == 1) {
+			// prev 버튼 비활성화
+		}
+		else {
+			// prev 버튼 활성화
+			pagebar.append("<a href= '" + url + (pageNo - 1) + "'>prev</a>");
+			pagebar.append("\n");
+		}
+		// 번호
+		while(pageNo <= pagebarEnd && pageNo <= totalPages) {
+			if(pageNo == cPage) {
+				// 현재페이지인 경우
+				pagebar.append("<span class='cPage'>" + pageNo + "</sapn>");
+				pagebar.append("\n");
+				
+			}
+			else {
+				// 현재페이지가 아닌 경우(링크)
+				pagebar.append("<a href= '" + url + pageNo + "'>" + pageNo + "</a>");
+				pagebar.append("\n");
+			}
+			pageNo++;
+		}
+		// 다음 next
+		if(pageNo > totalPages) {
+			//
+		}
+		else {
+			pagebar.append("<a href= '" + url + pageNo + "'>next</a>");
+			pagebar.append("\n");
+		}
+		 
+		return pagebar.toString();
+	}
 }

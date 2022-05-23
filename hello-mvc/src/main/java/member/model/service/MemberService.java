@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import board.model.dto.Attachment;
+import board.model.dto.Board;
 import member.model.dao.MemberDao;
 import member.model.dto.Member;
 
@@ -18,6 +20,8 @@ import member.model.dto.Member;
  *
  */
 public class MemberService {
+	
+	public static final int NUM_PER_PAGE = 10; // 한 페이지에 표시할 콘텐츠 수
 	private MemberDao memberDao = new MemberDao();
 	
 	public Member findByMemberId(String memberId) {
@@ -87,9 +91,9 @@ public class MemberService {
 		return result;
 	}
 
-	public List<Member> findAll() {
+	public List<Member> findAll(Map<String, Object> param) {
 		Connection conn = getConnection();
-		List<Member> list = memberDao.findAll(conn);
+		List<Member> list = memberDao.findAll(conn, param);
 		close(conn);
 		return list;
 	}
@@ -114,6 +118,34 @@ public class MemberService {
 		List<Member> list = memberDao.findBy(conn, param);
 		close(conn);
 		return list;
+	}
+
+	public int getTotalContents() {
+		Connection conn = getConnection();
+		int totalContents = memberDao.getTotalContents(conn);
+		close(conn);
+		return totalContents;
+	}
+
+	public List<Board> findAllBoard(Map<String, Object> paramBorad) {
+		Connection conn = getConnection();
+		List<Board> boardList = memberDao.findAllBoard(conn, paramBorad);
+		close(conn);
+		return boardList;
+	}
+
+	public int getTotalContentsBoard() {
+		Connection conn = getConnection();
+		int totalContentsBoard = memberDao.getTotalContentsBoard(conn);
+		close(conn);
+		return totalContentsBoard;
+	}
+
+	public List<Attachment> findAllBoardAttach() {
+		Connection conn = getConnection();
+		List<Attachment> attachList = memberDao.findAllBoardAttach(conn);
+		close(conn);
+		return attachList;
 	}
 
 

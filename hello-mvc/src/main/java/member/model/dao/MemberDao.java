@@ -5,6 +5,7 @@ import static common.JdbcTemplate.close;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import board.model.dto.Attachment;
+import board.model.dto.Board;
+import board.model.exception.BoardException;
+import common.HelloMvcUtils;
+import common.JdbcTemplate;
 import member.model.dto.Member;
 import member.model.dto.MemberRole;
 import member.model.exception.MemberException;
@@ -74,6 +80,33 @@ public class MemberDao {
 		member.setEnrollDate(rset.getDate("enroll_date"));
 		return member;
 	}
+	
+	private Board handleBoardResultSet(ResultSet rset) throws SQLException {
+		Board board;
+		board = new Board();
+
+		board.setNo(rset.getInt("no"));
+		board.setTitle(rset.getString("title"));
+		board.setMemberId(rset.getString("member_id"));
+		board.setContent(rset.getString("content"));
+		board.setReadCount(rset.getInt("read_Count"));
+		board.setRegDate(rset.getDate("reg_date"));
+		return board;
+	}
+	
+	private Attachment handleAttachmentResultSet(ResultSet rset) throws SQLException {
+		Attachment attachment;
+		attachment = new Attachment();
+
+		attachment.setNo(rset.getInt("no"));
+		attachment.setBoardNo(rset.getInt("board_no"));
+		attachment.setOriginalFileName(rset.getString("original_filename"));
+		attachment.setRenamedFileName(rset.getString("renamed_filename"));
+		attachment.setRegDate(rset.getDate("reg_date"));
+		return attachment;
+	}
+	
+	
 
 	public int insertMember(Connection conn, Member member) {
 		String sql = prop.getProperty("insertMember");
@@ -172,9 +205,10 @@ public class MemberDao {
 	/**
 	 * 1건 조회 시 member 객체 하나 또는 null 리턴
 	 * n건 조회 시 여러 건의 member 객체를 가진 list 또는 빈 list 
+	 * @param param 
 	 * 
 	 */
-	public List<Member> findAll(Connection conn) {
+	public List<Member> findAll(Connection conn, Map<String, Object> param) {
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		List<Member> list = new ArrayList<>();
@@ -182,6 +216,8 @@ public class MemberDao {
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, (int) param.get("start"));
+			pstmt.setInt(2, (int) param.get("end"));
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
 				Member member = handleMemberResultSet(rset);
@@ -237,4 +273,140 @@ public class MemberDao {
 		}
 		return list;
 	}
+	
+//	public static void main(String[] args) {
+//		new MemberDao().updatePasswordAll();
+//	}
+	
+    public void updatePasswordAll() { 
+    	// 1. 회원 아이디 조회 / 신규 비밀번호 설정
+        Connection conn = JdbcTemplate.getConnection();
+        String sql = prop.getProperty("findAll");
+        List<Member> list = new ArrayList<>();
+        try(
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rset = pstmt.executeQuery();
+        ){
+            while(rset.next()) {
+                String memberId = rset.getString("member_id");
+                Member member = new Member();
+                member.setMemberId(memberId);
+                member.setPassword(HelloMvcUtils.encrypt("1234", memberId));
+                list.add(member);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(list); 
+        
+        // 비밀번호 업데이트
+        sql = prop.getProperty("updatePassword");
+        try(
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+        ){
+            for(Member member : list) {
+                pstmt.setString(1, member.getPassword());
+                pstmt.setString(2, member.getMemberId());
+                pstmt.executeUpdate();
+                System.out.println("변경완료 : " + member.getMemberId() + " - " + member.getPassword());
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+    }
+
+	public int getTotalContents(Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		int getTotalContents = 0;
+		String sql = prop.getProperty("getTotalContents");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				getTotalContents = rset.getInt(1); // 컬럼 인덱스
+			}
+		} catch (Exception e) {
+			throw new MemberException("전체 회원수 조회 오류", e);
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return getTotalContents;
+	}
+
+	public List<Board> findAllBoard(Connection conn, Map<String, Object> paramBorad) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<Board> boardList = new ArrayList<>();
+		String sql = prop.getProperty("findAllBoard");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, (int) paramBorad.get("start"));
+			pstmt.setInt(2, (int) paramBorad.get("end"));
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				Board board = handleBoardResultSet(rset);
+				boardList.add(board);
+			}
+		} catch (Exception e) {
+			throw new MemberException("게시판 조회 오류", e);
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return boardList;
+	}
+
+	public int getTotalContentsBoard(Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		int getTotalContentsBoard = 0;
+		String sql = prop.getProperty("getTotalContentsBoard");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				getTotalContentsBoard = rset.getInt(1); // 컬럼 인덱스
+			}
+		} catch (Exception e) {
+			throw new MemberException("전체 게시글 조회 오류", e);
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return getTotalContentsBoard;
+	}
+
+	public List<Attachment> findAllBoardAttach(Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		List<Attachment> attachList = new ArrayList<>();
+		String sql = prop.getProperty("findAllBoardAttach");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				Attachment attachment = handleAttachmentResultSet(rset);
+				attachList.add(attachment);
+			}
+		} catch (Exception e) {
+			throw new MemberException("첨부파일 포함 게시글 조회 오류", e);
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return attachList;
+	}
+	
 }

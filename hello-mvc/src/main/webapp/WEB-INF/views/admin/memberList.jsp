@@ -4,6 +4,7 @@
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <%
 	List<Member> list = (List<Member>) request.getAttribute("list");
+	String pagebar = (String) request.getAttribute("pagebar");
 %>
 <!-- 관리자용 admin.css link -->
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/admin.css" />
@@ -105,6 +106,9 @@
 %>		
 		</tbody>
 	</table>
+	<div id="pagebar">
+		<%= pagebar %>
+	</div>
 </section>
 <form 	
 		action="<%= request.getContextPath() %>/admin/memberRoleUpdate" 
