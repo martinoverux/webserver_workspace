@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-import board.model.dto.Attachment;
-import board.model.dto.Board;
 import member.model.dao.MemberDao;
 import member.model.dto.Member;
 
@@ -127,26 +125,7 @@ public class MemberService {
 		return totalContents;
 	}
 
-	public List<Board> findAllBoard(Map<String, Object> paramBorad) {
-		Connection conn = getConnection();
-		List<Board> boardList = memberDao.findAllBoard(conn, paramBorad);
-		close(conn);
-		return boardList;
-	}
 
-	public int getTotalContentsBoard() {
-		Connection conn = getConnection();
-		int totalContentsBoard = memberDao.getTotalContentsBoard(conn);
-		close(conn);
-		return totalContentsBoard;
-	}
-
-	public List<Attachment> findAllBoardAttach() {
-		Connection conn = getConnection();
-		List<Attachment> attachList = memberDao.findAllBoardAttach(conn);
-		close(conn);
-		return attachList;
-	}
 
 
 

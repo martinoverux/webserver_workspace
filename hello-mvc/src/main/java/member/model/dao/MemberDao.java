@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import board.model.dto.Attachment;
-import board.model.dto.Board;
-import board.model.exception.BoardException;
 import common.HelloMvcUtils;
 import common.JdbcTemplate;
 import member.model.dto.Member;
@@ -81,33 +78,6 @@ public class MemberDao {
 		return member;
 	}
 	
-	private Board handleBoardResultSet(ResultSet rset) throws SQLException {
-		Board board;
-		board = new Board();
-
-		board.setNo(rset.getInt("no"));
-		board.setTitle(rset.getString("title"));
-		board.setMemberId(rset.getString("member_id"));
-		board.setContent(rset.getString("content"));
-		board.setReadCount(rset.getInt("read_Count"));
-		board.setRegDate(rset.getDate("reg_date"));
-		return board;
-	}
-	
-	private Attachment handleAttachmentResultSet(ResultSet rset) throws SQLException {
-		Attachment attachment;
-		attachment = new Attachment();
-
-		attachment.setNo(rset.getInt("no"));
-		attachment.setBoardNo(rset.getInt("board_no"));
-		attachment.setOriginalFileName(rset.getString("original_filename"));
-		attachment.setRenamedFileName(rset.getString("renamed_filename"));
-		attachment.setRegDate(rset.getDate("reg_date"));
-		return attachment;
-	}
-	
-	
-
 	public int insertMember(Connection conn, Member member) {
 		String sql = prop.getProperty("insertMember");
 		int result = 0;
@@ -342,71 +312,6 @@ public class MemberDao {
 		return getTotalContents;
 	}
 
-	public List<Board> findAllBoard(Connection conn, Map<String, Object> paramBorad) {
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		List<Board> boardList = new ArrayList<>();
-		String sql = prop.getProperty("findAllBoard");
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, (int) paramBorad.get("start"));
-			pstmt.setInt(2, (int) paramBorad.get("end"));
-			rset = pstmt.executeQuery();
-			while(rset.next()) {
-				Board board = handleBoardResultSet(rset);
-				boardList.add(board);
-			}
-		} catch (Exception e) {
-			throw new MemberException("게시판 조회 오류", e);
-		} finally {
-			close(rset);
-			close(pstmt);
-		}
-		return boardList;
-	}
 
-	public int getTotalContentsBoard(Connection conn) {
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		int getTotalContentsBoard = 0;
-		String sql = prop.getProperty("getTotalContentsBoard");
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rset = pstmt.executeQuery();
-			while(rset.next()) {
-				getTotalContentsBoard = rset.getInt(1); // 컬럼 인덱스
-			}
-		} catch (Exception e) {
-			throw new MemberException("전체 게시글 조회 오류", e);
-		} finally {
-			close(rset);
-			close(pstmt);
-		}
-		return getTotalContentsBoard;
-	}
-
-	public List<Attachment> findAllBoardAttach(Connection conn) {
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		List<Attachment> attachList = new ArrayList<>();
-		String sql = prop.getProperty("findAllBoardAttach");
-		
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rset = pstmt.executeQuery();
-			while(rset.next()) {
-				Attachment attachment = handleAttachmentResultSet(rset);
-				attachList.add(attachment);
-			}
-		} catch (Exception e) {
-			throw new MemberException("첨부파일 포함 게시글 조회 오류", e);
-		} finally {
-			close(rset);
-			close(pstmt);
-		}
-		return attachList;
-	}
 	
 }

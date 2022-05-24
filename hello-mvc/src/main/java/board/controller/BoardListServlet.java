@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import board.model.dto.Attachment;
-import board.model.dto.Board;
+import board.model.dto.BoardExt;
 import common.HelloMvcUtils;
-import member.model.service.MemberService;
+import board.model.service.BoardService;
 
 /**
  * Servlet implementation class BoardListServlet
@@ -22,13 +22,13 @@ import member.model.service.MemberService;
 @WebServlet("/board/boardList")
 public class BoardListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private MemberService memberService = new MemberService();
+	private BoardService boardService = new BoardService();
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 1. 사용자 입력값 처리
-		int numPerPage = memberService.NUM_PER_PAGE;
+		int numPerPage = boardService.NUM_PER_PAGE;
 		int cPage = 1;
 		try {
 			cPage = Integer.parseInt(request.getParameter("cPage"));
@@ -44,13 +44,13 @@ public class BoardListServlet extends HttpServlet {
 		
 		// 2. 업무 로직
 		// 2.a. content 영역
-		List<Board> boardList = memberService.findAllBoard(paramBorad);
-		List<Attachment> attachList = memberService.findAllBoardAttach();
+		List<BoardExt> boardList = boardService.findAllBoard(paramBorad);
+		List<Attachment> attachList = boardService.findAllBoardAttach();
 		System.out.println("list = " + boardList);
 		System.out.println("list = " + attachList);
 		
 		// 2.b. pagebar 영역
-		int totalContentsBoard = memberService.getTotalContentsBoard(); 
+		int totalContentsBoard = boardService.getTotalContentsBoard(); 
 		String url = request.getRequestURI();
 		String pagebar = HelloMvcUtils.getPageBar(cPage, numPerPage, totalContentsBoard, url);
 		System.out.println("pagebar = " + pagebar);
