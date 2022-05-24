@@ -17,6 +17,7 @@ import board.model.dto.Attachment;
 import board.model.dto.BoardExt;
 import board.model.dao.BoardDao;
 import board.model.exception.BoardException;
+import member.model.exception.MemberException;
 
 public class BoardDao {
 	
@@ -41,6 +42,7 @@ public class BoardDao {
 		board.setContent(rset.getString("content"));
 		board.setReadCount(rset.getInt("read_Count"));
 		board.setRegDate(rset.getDate("reg_date"));
+		board.setAttachCount(rset.getInt("attach_cnt"));
 		return board;
 	}
 	
@@ -121,5 +123,66 @@ public class BoardDao {
 			close(pstmt);
 		}
 		return attachList;
+	}
+
+	public int insertBoard(Connection conn, BoardExt board) {
+		String sql = prop.getProperty("insertBoard");
+		int result = 0;
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, board.getTitle());
+			pstmt.setString(2, board.getMemberId());
+			pstmt.setString(3, board.getContent());	
+			
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new BoardException("게시글 등록 오류", e);
+		}finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+
+	public int findCurrentBoardNo(Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		int no = 0;
+		String sql = prop.getProperty("findCurrentBoardNo");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rset = pstmt.executeQuery();
+			while(rset.next()) {
+				no = rset.getInt(1);
+			}
+		} catch (SQLException e) {
+			 throw new BoardException("보드 번호 조회 오류", e);
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		return no;
+	}
+
+	public int insertAttachment(Connection conn, Attachment attach) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("insertAttachment");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, attach.getBoardNo());
+			pstmt.setString(2, attach.getOriginalFileName());
+			pstmt.setString(3, attach.getRenamedFileName());	
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new BoardException("첨부파일 등록 오류", e);
+		}finally {
+			close(pstmt);
+		}
+		return result;
 	}
 }

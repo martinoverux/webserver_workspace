@@ -13,6 +13,9 @@
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/board.css" />
 <section id="board-container">
 	<h2>게시판 </h2>
+<% if (loginMember != null) { %>
+	<input type="button" value="글쓰기" id="btn-add" onclick="location.href='<%= request.getContextPath() %>/board/boardEnroll';"/>
+<% } %>
 	<table id="tbl-board">
 		<thead>
 			<tr>
@@ -34,13 +37,11 @@
 				<td><%= board.getTitle() %></td>
 				<td><%= board.getMemberId()%></td>
 				<td><%= board.getRegDate()%></td>
-				<% for (Attachment attachment : attachList){ 
-				if(board.getNo() == attachment.getBoardNo()){ %>
-				<td><img src="<%= request.getContextPath() %>/images/file.png" alt="첨부파일 이미지"/></td>
-				<% } else {%>
-				<td></td>
-				<% } 
-				}%>				
+				<td>
+					<% if(board.getAttachCount() > 0) { %>					
+								<img src="<%= request.getContextPath() %>/images/file.png" alt="" />
+					<% } %>					
+				</td>			
 				<td><%= board.getReadCount()%></td>
 			</tr>
 <% } 
