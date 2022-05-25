@@ -1,29 +1,28 @@
+
+<%@page import="member.model.dto.MemberRole"%>
+<%@page import="member.model.dto.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@page import="member.model.dto.Member"%>
-<%@page import="member.model.dto.MemberRole"%>
 <%
 	Member loginMember = (Member) session.getAttribute("loginMember");
 	// System.out.println("loginMember@header.jsp = " + loginMember);
 	
 	String msg = (String) session.getAttribute("msg");
-	if(msg != null){
+	if(msg != null)
 		session.removeAttribute("msg");
-	}
 	
-	String saveId = null; // 아이디 저장을 체크한 경우, memberId값이 담길 변수
+	String saveId = null; // 아이디저장을 체크한 경우, memberId값이 담길 변수
 	Cookie[] cookies = request.getCookies();
 	if(cookies != null){
 		for(Cookie cookie : cookies){
-		//	System.out.println("Cookie{" + cookie.getName() + "=" + cookie.getValue() + "}");
+			// System.out.println("Cookie{" + cookie.getName() + "=" + cookie.getValue() + "}");
 			if("saveId".equals(cookie.getName())){
 				saveId = cookie.getValue();
 			}
 		}
 	}
 	else {
-		System.out.println("이번 요청에 전달된 cookie가 없습니다.");
-		
+		// System.out.println("> 이번 요청에 전달된 cookie가 없습니다.");
 	}
 %>
 <!DOCTYPE html>
@@ -34,11 +33,12 @@
 <link rel="stylesheet" href="<%=request.getContextPath() %>/css/style.css" />
 <script>
 window.onload = () => {
-	<% if(msg != null) { %>
-		alert("<%= msg %>");
-	<% } %>
+<% if(msg != null){ %>
+	alert("<%= msg %>");
+<% } %>
 	
-	<% if(loginMember == null) { %>
+	
+<% if(loginMember == null) { %>
 	document.loginFrm.onsubmit = (e) => {
 		const memberIdVal = memberId.value;
 		const passwordVal = password.value;
@@ -53,9 +53,10 @@ window.onload = () => {
 			password.select();
 			return false;
 		}
-	};
-<% }%>
+	};	
+<% } %>
 };
+
 
 </script>
 </head>
@@ -64,7 +65,8 @@ window.onload = () => {
 		<header>
 			<h1>Hello MVC</h1>
 			<div class="login-container">
-			<%if(loginMember == null) { %>
+			<% if(loginMember == null){ %>
+				<%-- 로그인 전 --%>
 				<!-- 로그인폼 시작 -->
 				<form id="loginFrm" name="loginFrm" method="POST" action="<%= request.getContextPath() %>/member/login">
 					<table>
@@ -78,7 +80,7 @@ window.onload = () => {
 						</tr>
 						<tr>
 							<td colspan="2">
-								<input type="checkbox" name="saveId" id="saveId" <%= saveId != null ? "checked" : ""  %> />
+								<input type="checkbox" name="saveId" id="saveId" <%= saveId != null ? "checked" : "" %>/>
 								<label for="saveId">아이디저장</label>&nbsp;&nbsp;
 								<input type="button" value="회원가입" onclick="location.href='<%= request.getContextPath() %>/member/memberEnroll';">
 							</td>
@@ -86,23 +88,22 @@ window.onload = () => {
 					</table>
 				</form>
 				<!-- 로그인폼 끝-->
-				<% } else { %>
-				<%-- 로그인 성공 시 --%>
-				<talbe id="login">
+			<% } else { %>
+				<%-- 로그인 성공시 --%>
+				<table id="login">
 					<tbody>
 						<tr>
 							<td><%= loginMember.getMemberName() %>님, 안녕하세요.</td>
 						</tr>
 						<tr>
 							<td>
-								<input type="button" value="내정보보기" onclick="location.href='<%= request.getContextPath() %>/member/memberView';" />
-								<input type="button" value="로그아웃" onclick="location.href='<%= request.getContextPath() %>/member/logout';" />
+								<input type="button" value="내정보보기" onclick="location.href='<%= request.getContextPath() %>/member/memberView';"/>
+								<input type="button" value="로그아웃" onclick="location.href='<%= request.getContextPath() %>/member/logout';"/>							
 							</td>
 						</tr>
 					</tbody>
-				</talbe>
-				
-				<% } %>
+				</table>
+			<% } %>
 			</div>
 			<!-- 메인메뉴 시작 -->
 			<nav>
@@ -110,8 +111,8 @@ window.onload = () => {
 					<li class="home"><a href="<%= request.getContextPath() %>">Home</a></li>
 					<li class="notice"><a href="#">공지사항</a></li>
 					<li class="board"><a href="<%= request.getContextPath() %>/board/boardList">게시판</a></li>
-					<% if(loginMember != null && loginMember.getMemberRole() == MemberRole.A ) { %>	
-					<li class="admin"><a href="<%= request.getContextPath() %>/admin/memberList">회원관리</a></li>
+					<% if(loginMember != null && loginMember.getMemberRole() == MemberRole.A) { %>
+						<li class="admin"><a href="<%= request.getContextPath() %>/admin/memberList">회원관리</a></li>
 					<% } %>
 				</ul>
 			</nav>

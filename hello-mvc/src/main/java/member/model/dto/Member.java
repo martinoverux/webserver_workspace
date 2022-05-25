@@ -9,20 +9,22 @@ import java.sql.Date;
  *
  */
 public class Member {
+
 	private String memberId;
 	private String password;
 	private String memberName;
-	private MemberRole memberRole;  // enum U A
+	private MemberRole memberRole; // enum U A
 	private String gender;
 	private Date birthday;
 	private String email;
 	private String phone;
 	private String address;
 	private String hobby;
-	private Date enrollDate; // 시분초까지 다루려면 Timestamp
-	
+	private Date enrollDate;
+
 	public Member() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public Member(String memberId, String password, String memberName, MemberRole memberRole, String gender,
@@ -138,4 +140,11 @@ public class Member {
 	
 	
 	
+
+	
 }
+
+
+
+
+

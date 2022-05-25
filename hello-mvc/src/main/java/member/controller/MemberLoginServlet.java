@@ -27,23 +27,27 @@ public class MemberLoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 1. 사용자입력값 처리
+		// 1. 인코딩처리
+//		request.setCharacterEncoding("utf-8");
+		
+		// 2. 사용자입력값 처리
 		String memberId = request.getParameter("memberId");
 		String password = HelloMvcUtils.encrypt(request.getParameter("password"), memberId);
-		String saveId = request.getParameter("saveId"); // "on" || null
+		String saveId = request.getParameter("saveId"); // "on" | null
 		System.out.println("memberId@MemberLoginServlet = " + memberId);
 		System.out.println("password@MemberLoginServlet = " + password);
-		System.out.println("password@MemberLoginServlet = " + saveId);
+		System.out.println("saveId@MemberLoginServlet = " + saveId);
 		
 		// 3. 업무로직
 		Member member = memberService.findByMemberId(memberId);
 		System.out.println("member@MemberLoginServlet = " + member);
-		
-		// session 가져오기
-		// getSession(create:boolean) : 
-		// true(기본값) 존재하면 해당 세션 객체를, 존재하지 않으면 새로 생성해서 리턴
-		// false 존재하면 해당 세션 객체를, 존재하지 않으면 null을 리턴
+
+		// session가져오기 
+		// getSession(create:boolean)
+		// true(기본값) 존재하면 해당세션객체를, 존재하지 않으면 새로 생성해서 리턴.
+		// false 존재하면 해당세션객체를, 존재하지 않으면 null을 리턴.
 		HttpSession session = request.getSession();
+//		System.out.println(session.getId()); // JSESSIONID 동일
 		
 		if(member != null && password.equals(member.getPassword())) {
 			// 로그인 성공!
@@ -52,15 +56,15 @@ public class MemberLoginServlet extends HttpServlet {
 			// saveId 쿠키 처리
 			Cookie cookie = new Cookie("saveId", memberId);
 			cookie.setPath(request.getContextPath()); // /mvc로 시작하는 경로에 이 쿠키를 사용함.
-			if(saveId != null) {	
-				// max-age 설정이 없다면, 세션쿠키로 등록. 브라우져 종료 시 폐기
-				// max-age 설정이 있다면, 영속쿠키로 등록. 지정한 시각에 폐기
-				cookie.setMaxAge(7 * 24 * 60 * 60); // 초단위 일주일 후 폐기
+			if(saveId != null) {
+				// max-age설정이 없다면, 세션쿠키로 등록. 브라우져 종료시 폐기
+				// max-age설정이 있다면, 영속쿠키로 등록. 지정한 시각에 폐기
+				cookie.setMaxAge(7 * 24 * 60 * 60); // 초단위 일주일후 폐기
 			}
 			else {
-				cookie.setMaxAge(0); // 유효기간을 0으로 만들어서 쿠키 즉시 삭제
+				cookie.setMaxAge(0); // 0 즉시삭제
 			}
-			response.addCookie(cookie);
+			response.addCookie(cookie); // 응답객체 쿠키추가. Set-Cookie 헤더에 작성				
 		}
 		else {
 			// 로그인 실패!

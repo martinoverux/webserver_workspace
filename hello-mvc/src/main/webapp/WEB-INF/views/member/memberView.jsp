@@ -97,35 +97,31 @@
 			</tr>
 		</table>
         <input type="submit" value="정보수정"/>
-        <input type="button" value="비밀번호수정" onclick="location.href='<%= request.getContextPath() %>/member/passwordUpdate'"/>
+        <input type="button" value="비밀번호수정" onclick="location.href='<%= request.getContextPath() %>/member/passwordUpdate';"/>
         <input type="button" onclick="deleteMember();" value="탈퇴"/>
 	</form>
 </section>
 <!-- 회원탈퇴폼 : POST /member/memberDelete 전송을 위해 시각화되지 않는 폼태그 이용 -->
-<%-- <form 
+<form 
 	name="memberDelFrm" 
 	action="<%= request.getContextPath() %>/member/memberDelete" 
 	method="POST">
 	<input type="hidden" name="memberId" value="<%= loginMember.getMemberId() %>" />
-</form> --%>
-<%-- const deleteMember = () => {
-	if(confirm("<%  %>님 정말로 탈퇴하시겠습니까?")){
+</form>
+<script>
+const deleteMember = () => {
+	if(confirm("정말로 탈퇴하시겠습니까?")){
 		document.memberDelFrm.submit();
 	}
 }
- --%>
-<script>
 
- 
- const deleteMember = () => { 
-		const title = "Popup";
-		const spec = "width=300px, height=200px";
-		const popup = open("<%= request.getContextPath() %>/member/deleteMember", title, spec);
-	}
- 
-
-// 회원수정폼 유효성 검사
-
+/* const updateMember = () => {
+	document.memberUpdateFrm.submit(); // form.submit()하는 경우 handler가 호출되지 않는다.
+};
+ */
+/**
+ * 회원수정폼 유효성 검사
+ */
 document.memberUpdateFrm.onsubmit = () => {
 	// memberName
 	if(!/^[가-힣]{2,}$/.test(memberName.value)){

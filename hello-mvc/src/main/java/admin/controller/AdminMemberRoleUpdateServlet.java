@@ -1,7 +1,6 @@
 package admin.controller;
 
 import java.io.IOException;
-import java.sql.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,25 +19,38 @@ import member.model.service.MemberService;
 public class AdminMemberRoleUpdateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private MemberService memberService = new MemberService();
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			// 1. 사용자 입력값 처리
 			String memberId = request.getParameter("memberId");
-			String memberRole = request.getParameter("memberRole");
-			Member member = memberService.findByMemberId(memberId);
-			member.setMemberRole(MemberRole.valueOf(memberRole));
+			String _memberRole = request.getParameter("memberRole");
+			MemberRole memberRole = MemberRole.valueOf(_memberRole);
+			Member member = new Member();
+			member.setMemberId(memberId);
+			member.setMemberRole(memberRole);
+			System.out.println("member = " + member);
 			
+			// 2. 업무로직
 			int result = memberService.updateMemberRole(member);
-			String msg = "회원권한을 성공적으로 수정했습니다."; 
-
-			request.getSession().setAttribute("msg", msg); 
+			String msg = "권한정보를 성공적으로 수정했습니다.";
+			
+			// 3. redirect
+			request.getSession().setAttribute("msg", msg);
 			response.sendRedirect(request.getContextPath() + "/admin/memberList");
 			
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
+
 }
+
+
+
+
+

@@ -16,68 +16,73 @@ import member.model.dto.Member;
 import member.model.service.MemberService;
 
 /**
+ * 페이징
  * 1. content 영역
- * 	- cPage 현재 페이지
- * 	- numPerPage 한 페이지당 표시할 콘텐츠수
- * 	- 페이징 쿼리
+ * 	- cPage 현재페이지
+ *  - numPerPage 한 페이지당 표시할 컨텐츠수
+ * 	- 페이징쿼리
  * 		- start
  * 		- end
- * 
+ *  
  * 2. pagebar 영역
- *  - totalContents 전체 콘텐츠수
- *  - totalpages 전체페이지수 12
- *  - pagebarSize 페이지바 길이 10
- *  - pageNo 페이지 증감변수
+ * 	- cPage 현재페이지
+ *  - numPerPage 한 페이지당 표시할 컨텐츠수
+ *  
+ * 	- totalContents 전체컨텐츠수
+ *  - totalPages 전체페이지수 (totalContents, numPerPage) 
+ *  - pagebarSize 페이지바 길이 5
+ *  - pageNo 페이지증감변수
  *  - pagebarStart ~ pagebarEnd 페이지바 범위
  *  - url 다음요청url
+ * 
  */
 @WebServlet("/admin/memberList")
 public class AdminMemberListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private MemberService memberService = new MemberService();
 	
+	
 	/**
 	 * select * from member order by enroll_date desc
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			// 1. 사용자 입력값 처리
-			int numPerPage = memberService.NUM_PER_PAGE;
+			// 1. 사용자입력값 처리
+			int numPerPage = MemberService.NUM_PER_PAGE;
 			int cPage = 1;
+			
 			try {
 				cPage = Integer.parseInt(request.getParameter("cPage"));
-			} catch ( NumberFormatException e) {
-				// 예외 발생 시 현재 페이지는 1로 처리
+			} catch (NumberFormatException e) {
+				// 예외발생시 현재페이지는 1로 처리
 			}
-			Map<String, Object> param = new HashMap<>();
-            int start = (cPage - 1) * numPerPage + 1;
-            int end =  cPage * numPerPage;
 			
+			Map<String, Object> param = new HashMap<>();
+			int start = (cPage - 1) * numPerPage + 1;
+			int end = cPage * numPerPage;
 			param.put("start", start);
 			param.put("end", end);
 			
-			// 2. 업무 로직
-			// 2.a. content 영역
+			// 2. 업무로직
+			// 2.a. content영역
 			List<Member> list = memberService.findAll(param);
 			System.out.println("list = " + list);
 			
-			// 2.b. pagebar 영역
-			int totalContentsBoard = memberService.getTotalContents(); // select count(*) from member
-			String url = request.getRequestURI();
-			String pagebar = HelloMvcUtils.getPageBar(cPage, numPerPage, totalContentsBoard, url);
+			// 2.b. pagebar영역
+			int totalContents = memberService.getTotalContents(); // select count(*) from member
+			String url = request.getRequestURI(); // /mvc/admin/memberList
+			String pagebar = HelloMvcUtils.getPagebar(cPage, numPerPage, totalContents, url);
 			System.out.println("pagebar = " + pagebar);
 			
 			// 3. view단 처리
 			request.setAttribute("list", list);
 			request.setAttribute("pagebar", pagebar);
-			request
-					.getRequestDispatcher("/WEB-INF/views/admin/memberList.jsp")
-					.forward(request, response);
-			
+			request.getRequestDispatcher("/WEB-INF/views/admin/memberList.jsp")
+				.forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
+
 }

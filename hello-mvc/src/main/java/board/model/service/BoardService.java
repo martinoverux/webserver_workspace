@@ -9,63 +9,98 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-import board.model.dto.Attachment;
-import board.model.dto.BoardExt;
 import board.model.dao.BoardDao;
+import board.model.dto.Attachment;
+import board.model.dto.Board;
+import board.model.dto.BoardExt;
 
 public class BoardService {
-	
-	public static final int NUM_PER_PAGE = 10; // 한 페이지에 표시할 콘텐츠 수
+
 	private BoardDao boardDao = new BoardDao();
-	
-	
-	public List<BoardExt> findAllBoard(Map<String, Object> paramBorad) {
+
+	public List<BoardExt> findAll(Map<String, Object> param) {
 		Connection conn = getConnection();
-		List<BoardExt> boardList = boardDao.findAllBoard(conn, paramBorad);
+		List<BoardExt> list = boardDao.findAll(conn, param);
 		close(conn);
-		return boardList;
+		return list;
 	}
 
-	public int getTotalContentsBoard() {
+	public int getTotalContents() {
 		Connection conn = getConnection();
-		int totalContentsBoard = boardDao.getTotalContentsBoard(conn);
+		int totalContents = boardDao.getTotalContents(conn);
 		close(conn);
-		return totalContentsBoard;
+		return totalContents;
+
 	}
 
-	public List<Attachment> findAllBoardAttach() {
-		Connection conn = getConnection();
-		List<Attachment> attachList = boardDao.findAllBoardAttach(conn);
-		close(conn);
-		return attachList;
-	}
-
-	public int insertBoard(BoardExt board) {
+	/**
+	 * Transaction
+	 * - all or none
+	 * 
+	 * 
+	 * @param board
+	 * @return
+	 */
+	public int insertBoard(Board board) {
 		int result = 0;
 		Connection conn = getConnection();
 		try {
+			
 			// 1. board에 등록
 			result = boardDao.insertBoard(conn, board); // pk no값 결정 - seq_board_no.nextval
-			
+
 			// 2. board pk 가져오기
 			int no = boardDao.findCurrentBoardNo(conn); // seq_board_no.currval
 			System.out.println("방금 등록된 board.no = " + no);
+			
 			// 3. attachment에 등록
-			List<Attachment> attachments = board.getAttachments(); 
+			List<Attachment> attachments = ((BoardExt) board).getAttachments();
 			if(attachments != null && !attachments.isEmpty()) {
 				for(Attachment attach : attachments) {
 					attach.setBoardNo(no);
 					result = boardDao.insertAttachment(conn, attach);
 				}
 			}
+			
 			commit(conn);
-		} catch (Exception e) {
+		} catch(Exception e) {
 			rollback(conn);
-			throw e;  
+			throw e;
 		} finally {
 			close(conn);
 		}
 		return result;
 	}
 
+	public BoardExt findByNo(int no) {
+		Connection conn = getConnection();
+		BoardExt board = boardDao.findByNo(conn, no); // board테이블 조회
+		List<Attachment> attachments = boardDao.findAttachmentByBoardNo(conn, no); // attachment 테이블 조회
+		board.setAttachments(attachments);
+		close(conn);
+		return board;
+	}
+
+	public int updateReadCount(int no) {
+		Connection conn = getConnection();
+		int result = 0;
+		try {
+			result = boardDao.updateReadCount(conn, no);
+			commit(conn);
+		} catch(Exception e) {
+			rollback(conn);
+			throw e;
+		} finally {
+			close(conn);
+		}
+		return result;
+	}
+
+
+	public Attachment findAttachmentByNo(int no) {
+		Connection conn = getConnection();
+		Attachment attach = boardDao.findAttachmentByNo(conn, no);
+		close(conn);
+		return attach;
+	}
 }

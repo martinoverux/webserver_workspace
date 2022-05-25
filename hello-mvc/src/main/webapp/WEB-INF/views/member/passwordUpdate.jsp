@@ -31,36 +31,31 @@
 					</td>
 				</tr>
 			</table>
-			<input type="hidden" name="memberId" value=<%= loginMember.getMemberId() %> />
+			<input type="hidden" name="memberId" value="<%= loginMember.getMemberId() %>" />
 		</form>
 	</section>
 	<script>
 	newPasswordCheck.onblur = () => {
-		// 비밀번호 확인 
-	    if (newPassword.value !== newPasswordCheck.value) {
-	        alert("비밀번호가 일치하지 않습니다.");
-	        newPassword.select();
-	        return false; // 폼 유효성 검사에서 사용
-	      }
+		if(newPassword.value !== newPasswordCheck.value){
+			alert("두 비밀번호가 일치하지 않습니다.");
+			return false; // 폼 유효성 검사에서 사용
+		}	
 		return true;
 	};
 	
 	document.passwordUpdateFrm.onsubmit = () => {
-
-		// password 영문자/숫자/특수문자[!@#$%^&*()]
-		if(!/^[A-za-z0-9!@#$%^&*()]{4,}$/.test(oldPassword.value)){
-			alert("영문자/숫자/특수문자 !@#$%^&*()로 4글자 이상이어야 합니다.");
+		// password 영문자/숫자/특수문자!@#$%^&*()
+		if(!/^[A-Za-z0-9!@#$%^&*()]{4,}$/.test(oldPassword.value)){
+			alert("기존 비밀번호는 영문자/숫자/특수문자!@#$%^&*()로 4글자 이상이어야 합니다.");
 			return false;
 		}
-		if(!/^[A-za-z0-9!@#$%^&*()]{4,}$/.test(newPassword.value)){
-			alert("영문자/숫자/특수문자 !@#$%^&*()로 4글자 이상이어야 합니다.");
+		if(!/^[A-Za-z0-9!@#$%^&*()]{4,}$/.test(newPassword.value)){
+			alert("새 비밀번호는 영문자/숫자/특수문자!@#$%^&*()로 4글자 이상이어야 합니다.");
 			return false;
 		}
 		if(!newPasswordCheck.onblur()){
-			return false; // 폼 제출 방지
+			return false; // 폼 제출을 방지
 		}
-	}
-
+	}	
 	</script>
-	
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>

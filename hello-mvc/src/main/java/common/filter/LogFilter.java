@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet Filter implementation class LogFilter
  */
-//@WebFilter("/*")
+@WebFilter("/*")
 public class LogFilter implements Filter {
 
     /**
@@ -37,27 +37,31 @@ public class LogFilter implements Filter {
 	 * 
 	 * ServletRequest - HttpServletRequest의 부모타입
 	 * ServletResponse - HttpServletResponse의 부모타입
+	 * 
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// servlet 전처리
-		HttpServletRequest httpReq = (HttpServletRequest) request;
-		HttpServletResponse httpRes = (HttpServletResponse) response;
+		HttpServletRequest httpReq = (HttpServletRequest) request; 
+		HttpServletResponse httpRes = (HttpServletResponse) response; 
 		
-		String uri = httpReq.getRequestURI();
+		String uri = httpReq.getRequestURI(); // /mvc/member/memberView
 		String method = httpReq.getMethod();
 		
 		System.out.println();
-		System.out.println("==================================================================");
+		System.out.println("=================================================");
 		System.out.println(method + " " + uri);
-		System.out.println("------------------------------------------------------------------");
+		System.out.println("-------------------------------------------------");
 		
-		// filter chain의 다음 필터 호출(마지막 필터인 경우는 servlet을 호출)
+		// filter chain의 다음 필터 호출(마지막 필터인 경우는 servlet 호출)
 		chain.doFilter(request, response);
 		
 		// servlet, jsp 후처리
-		System.out.println("__________________________________________________________________");
+		System.out.println("_________________________________________________");
 		System.out.println(httpRes.getStatus());
 		System.out.println();
+		
+		
+		
 	}
 
 	/**

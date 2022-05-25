@@ -11,13 +11,14 @@ import javax.servlet.http.HttpSessionListener;
 //@WebListener
 public class SessionCounterListener implements HttpSessionListener {
 
-	// 접속하고 있는 사용자의 수
+	// 접속하고 있는 사용자수
 	private static int activeSessions;
 	
     /**
      * Default constructor. 
      */
     public SessionCounterListener() {
+        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -25,17 +26,21 @@ public class SessionCounterListener implements HttpSessionListener {
      */
     public void sessionCreated(HttpSessionEvent se)  { 
     	activeSessions++;
-    	System.out.println("> 세션 생성! 접속사용자수 : " + activeSessions);
+    	System.out.println("> 세션생성! 접속사용자수 : " + activeSessions);
     }
 
 	/**
      * @see HttpSessionListener#sessionDestroyed(HttpSessionEvent)
      */
     public void sessionDestroyed(HttpSessionEvent se)  { 
-    	if(activeSessions > 0) {
-    		activeSessions--;    		
-    	}
-    	System.out.println("> 세션 폐기! 접속사용자수 : " + activeSessions);
-    } 
+    	if(activeSessions > 0)
+    		activeSessions--;
+    	System.out.println("> 세션폐기! 접속사용자수 : " + activeSessions);
+    }
 	
 }
+
+
+
+
+

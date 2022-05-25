@@ -1,6 +1,7 @@
 package common.filter;
 
 import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -18,13 +19,13 @@ import member.model.dto.Member;
  * Servlet Filter implementation class LoginFilter
  */
 @WebFilter({ 
-			"/member/memberView", 
-			"/member/memberUpdate", 
-			"/member/memberDelete",
-			"/member/passwordUpdate",
-			"/board/boardEnroll",
-			"/board/boardUpdate",
-			"/board/boardDelete"
+	"/member/memberView", 
+	"/member/memberUpdate", 
+	"/member/memberDelete",
+	"/member/passwordUpdate",
+	"/board/boardEnroll",
+	"/board/boardUpdate",
+	"/board/boardDelete",
 })
 public class LoginFilter implements Filter {
 
@@ -46,28 +47,19 @@ public class LoginFilter implements Filter {
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		// 로그인 여부 검사
-		// 로그인 후에만 접근 가능하도록함
-		HttpServletRequest httpReq = (HttpServletRequest) request;
-		HttpServletResponse httpRes = (HttpServletResponse) response;
+		HttpServletRequest httpReq = (HttpServletRequest) request; 
+		HttpServletResponse httpRes = (HttpServletResponse) response; 
 		
+		// 로그인여부 검사
 		HttpSession session = httpReq.getSession();
 		Member loginMember = (Member) session.getAttribute("loginMember");
+		
 		if(loginMember == null) {
-			String msg1 = (String) session.getAttribute("msg");
-			if(msg1 != null) {
-				httpRes.sendRedirect(httpReq.getContextPath() + "/");		
-				return; // 조기리턴
-			}
-			else {
-				String msg = "로그인 후에 확인할 수 있습니다.";
-				session.setAttribute("msg", msg);
-				httpRes.sendRedirect(httpReq.getContextPath() + "/");		
-				return; // 조기리턴
-			}
-			
+			session.setAttribute("msg", "로그인 후 사용가능합니다.");
+			httpRes.sendRedirect(httpReq.getContextPath() + "/");
+			return; // 조기리턴
 		}
-
+		
 		chain.doFilter(request, response);
 	}
 

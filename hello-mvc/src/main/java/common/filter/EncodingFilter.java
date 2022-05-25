@@ -12,11 +12,11 @@ import javax.servlet.annotation.WebFilter;
 /**
  * Servlet Filter implementation class EncodingFilter
  * 
- * 필터처리 순서
+ * 필터처리순서
  * - web.xml에 등록된 순서대로 처리
- * - web.xml에 등록된 필터가 @WebFilter 보다 우선순위가 높음
+ * - web.xml에 등록된 필터가 @WebFilter 보다 우선순위 높음.
  */
-//@WebFilter("/*")
+@WebFilter("/*")
 public class EncodingFilter implements Filter {
 
     /**
@@ -39,11 +39,8 @@ public class EncodingFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// 전처리
 		request.setCharacterEncoding("utf-8");
-		
 //		System.out.println("> 인코딩(utf-8) 처리 완료!");
-		
 		chain.doFilter(request, response);
-		
 		// 후처리
 	}
 

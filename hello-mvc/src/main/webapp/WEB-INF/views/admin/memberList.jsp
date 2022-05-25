@@ -1,61 +1,57 @@
 <%@page import="java.util.List"%>
+<%@ page import="member.model.dto.Member, java.util.ArrayList" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <%
 	List<Member> list = (List<Member>) request.getAttribute("list");
 	String pagebar = (String) request.getAttribute("pagebar");
+	
+	String searchType = request.getParameter("searchType");
+	String searchKeyword = request.getParameter("searchKeyword");
+
 %>
-<!-- 관리자용 admin.css link -->
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/admin.css" />
-<style>
-    div#search-container {width: 100%; margin:0 0 10px 0; padding:3px; background-color: rgba(0, 188, 212, 0.3);}
-    div#search-memberId {display: inline-block;}
-    div#search-memberName{display:none;}
-    div#search-gender{display:none;}
-    <%-- div#search-memberId {display:<%= "member_id".equals(searchType) || searchType == null ? "inline-block" : "none" %>;}
-	div#search-memberName {display:<%= "member_name".equals(searchType) ? "inline-block" : "none" %>;}
-	div#search-gender {display:<%= "gender".equals(searchType) ? "inline-block" : "none" %>;} --%>
+<style type="text/css">
+div#search-container {width: 100%; margin:0 0 10px 0; padding:3px; background-color: rgba(0, 188, 212, 0.3);}
+div#search-memberId {display: <%= "member_id".equals(searchType) || searchType == null ? "inline-block" : "none" %>;}
+div#search-memberName {display: <%= "member_name".equals(searchType) ? "inline-block" : "none" %>;}
+div#search-gender {display: <%= "gender".equals(searchType) ? "inline-block" : "none" %>;}
 </style>
+
 <section id="memberList-container">
-	<h2>회원관리</h2>
-	    <div id="search-container">
-        <label for="searchType">검색타입 :</label> 
+	<h2>회원관리</h2>	
+	<div id="search-container">
+    	<label for="searchType">검색타입 :</label> 
         <select id="searchType">
-            <option value="member_id">아이디</option>        
-            <option value="member_name">회원명</option>
-            <option value="gender">성별</option>
-<%--        <option value="member_id" <%="member_id".equals(searchType)?"selected":""%>>아이디</option>		
+            <option value="member_id" <%="member_id".equals(searchType)?"selected":""%>>아이디</option>		
 			<option value="member_name" <%="member_name".equals(searchType)?"selected":""%>>회원명</option>
-			<option value="gender" <%="gender".equals(searchType)?"selected":""%>>성별</option> --%>
+			<option value="gender" <%="gender".equals(searchType)?"selected":""%>>성별</option>
         </select>
         <div id="search-memberId" class="search-type">
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="member_id"/>
-                <input type="text" name="searchKeyword" id="input-id" size="25" placeholder="검색할 아이디를 입력하세요."/>
-   <%--         <input type="text" name="searchKeyword"  size="25" placeholder="검색할 아이디를 입력하세요." value="<%= "member_id".equals(searchType) ? searchKeyword : "" %>"/> --%>
-                <button type="submit">검색</button>            
-            </form>    
+                <input type="text" name="searchKeyword"  size="25" placeholder="검색할 아이디를 입력하세요." value="<%= "member_id".equals(searchType) ? searchKeyword : "" %>"/>
+                <button type="submit">검색</button>			
+            </form>	
         </div>
         <div id="search-memberName" class="search-type">
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="member_name"/>
-                <input type="text" name="searchKeyword" id="input-name" size="25" placeholder="검색할 이름을 입력하세요."/>
-  <%--          <input type="text" name="searchKeyword" size="25" placeholder="검색할 이름을 입력하세요." value="<%= "member_name".equals(searchType) ? searchKeyword : "" %>"/> --%>
-                <button type="submit">검색</button>            
-            </form>    
+                <input type="text" name="searchKeyword" size="25" placeholder="검색할 이름을 입력하세요." value="<%= "member_name".equals(searchType) ? searchKeyword : "" %>"/>
+                <button type="submit">검색</button>			
+            </form>	
         </div>
         <div id="search-gender" class="search-type">
             <form action="<%=request.getContextPath()%>/admin/memberFinder">
                 <input type="hidden" name="searchType" value="gender"/>
-                <input type="radio" name="searchKeyword" id="input-m" value="M" checked> 남
-                <input type="radio" name="searchKeyword" id="input-f" value="F"> 여
-  <%--          <input type="radio" name="searchKeyword" value="M" <%="gender".equals(searchType) && "M".equals(searchKeyword)?"checked":""%>> 남
-                <input type="radio" name="searchKeyword" value="F" <%="gender".equals(searchType) && "F".equals(searchKeyword)?"checked":""%>> 여 --%>
+                <input type="radio" name="searchKeyword" value="M" <%="gender".equals(searchType) && "M".equals(searchKeyword)?"checked":""%>> 남
+                <input type="radio" name="searchKeyword" value="F" <%="gender".equals(searchType) && "F".equals(searchKeyword)?"checked":""%>> 여
                 <button type="submit">검색</button>
             </form>
         </div>
-    </div>	
+    </div>
+	
 	<table id="tbl-member">
 		<thead>
 			<tr>
@@ -110,96 +106,42 @@
 		<%= pagebar %>
 	</div>
 </section>
-<form 	
-		action="<%= request.getContextPath() %>/admin/memberRoleUpdate" 
-		name="updateMemberRoleFrm"
-		method = "POST">
-	<input type="hidden" name = "memberId" />		
-	<input type="hidden" name = "memberRole" />		
+<form 
+	action="<%= request.getContextPath() %>/admin/memberRoleUpdate" 
+	name="updateMemberRoleFrm"
+	method="POST">
+	<input type="hidden" name="memberId" />
+	<input type="hidden" name="memberRole" />
 </form>
 
-
 <script>
-<% 
-String type =  request.getParameter("searchType"); 
-String keyword = request.getParameter("searchKeyword"); 
- if(type != null && keyword != null){  
-%>
-	document.querySelectorAll(".search-type").forEach((div) => {
-		div.style.display ="none";
-	});
-	let id = "";
-	const typeVal = "<%= type %>";
-	switch(typeVal){
-	case "member_id": 
-		id = "search-memberId";
-		break;
-	case "member_name": 
-		id = "search-memberName";
-		break;
-	case "gender":
-		id = "search-gender";
-		break;
-	}
-	document.querySelector(`#\${id}`).style.display = "inline-block";
-	document.querySelector("#searchType").value = typeVal;
-	
-	
-	const keywordVal = "<%= keyword %>";
-	let genderVal = "";
-	switch(typeVal){
-	case "member_id": 
-		document.querySelector("#input-id").value = keywordVal;
-		break;
-	case "member_name": 
-		document.querySelector("#input-name").value = keywordVal;
-		break;
-	case "gender":
-		genderVal = keywordVal;
-		break;
-	}
-	if(genderVal && genderVal == "M"){
-		document.querySelector("#input-m").checked = true;
-	}
-	else {
-		document.querySelector("#input-f").checked = true 
-		document.querySelector("#input-m").checked = false;		
-	}
-<% }%>
-
 searchType.addEventListener('change', (e) => {
-	const {value} = e.target; // 구조분해 할당
+	const {value} = e.target; // 구조분해할당
+	console.log(value);
+	
 	document.querySelectorAll(".search-type").forEach((div) => {
-		div.style.display ="none";
+		div.style.display = "none";
 	});
 	let id = "";
 	switch(value){
-	case "member_id": 
-		id = "search-memberId";
-		break;
-	case "member_name": 
-		id = "search-memberName";
-		break;
-	case "gender":
-		id = "search-gender";
-		break;
+		case "member_id": id = "search-memberId"; break; 
+		case "member_name": id = "search-memberName"; break; 
+		case "gender": id = "search-gender"; break; 
 	}
 	document.querySelector(`#\${id}`).style.display = "inline-block";
-
 });
-
 
 
 document.querySelectorAll(".member-role").forEach((select) => {
 	select.addEventListener('change', (e) => {
-		//console.log(e.target); // "U" "A"
-		//console.log(e.target.dataset.memberId); // key값 조회 시에는 camelcasing으로 참조
-		//console.log(e.target.value);
+		// console.dir(e.target);
+		// console.log(e.target.dataset.memberId); // key값을 조회시에는 camelcasing으로 참조 
+		// console.log(e.target.value); // "U" "A"
 		const memberId = e.target.dataset.memberId;
 		const memberRole = e.target.value;
 		
-		// jsp에서 js의 Template String 문법 사용 시 반드시 escaping 처리 할 것
-		// jsp의 EL 문법과 충돌
+		// jsp에서 js의 Template String문법 사용시 반드시 escaping처리할 것
+		// (jsp의 EL문법과 충돌)
 		if(confirm(`[\${memberId}]의 권한을 [\${memberRole}]로 변경하시겠습니까?`)){
 			const frm = document.updateMemberRoleFrm;
 			frm.memberId.value = memberId;
@@ -209,10 +151,8 @@ document.querySelectorAll(".member-role").forEach((select) => {
 		else {
 			e.target.querySelector("[selected]").selected = true;
 		}
+		
 	});
 });
-
-
-
 </script>
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>

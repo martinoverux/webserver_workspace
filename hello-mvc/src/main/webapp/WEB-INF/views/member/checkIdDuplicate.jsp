@@ -21,7 +21,7 @@ span#duplicated{color:red; font-weight:bold;}
 		<p><button type="button" onclick="closePopup();">닫기</button></p>
 		<script>
 		const closePopup = () => {
-			// 부모창
+			// opener 부모창 window객체
 			const frm = opener.document.memberEnrollFrm;
 			frm.memberId.value = '<%= memberId %>';
 			frm.idValid.value = 1;

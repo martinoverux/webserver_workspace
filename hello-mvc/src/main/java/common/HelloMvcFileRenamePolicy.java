@@ -13,7 +13,6 @@ public class HelloMvcFileRenamePolicy implements FileRenamePolicy {
 	@Override
 	public File rename(File oldFile) {
 		File newFile = null;
-		
 		do {
 			// 파일명 재지정 yyyyMMdd_HHmmssSSS_123
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmssSSS_");
@@ -23,12 +22,12 @@ public class HelloMvcFileRenamePolicy implements FileRenamePolicy {
 			String oldName = oldFile.getName(); // abc.txt
 			String ext = "";
 			int dotIndex = oldName.lastIndexOf("."); // 3
-			if(dotIndex > -1) {
-				ext = oldName.substring(dotIndex);
-			}	
-				String newName = sdf.format(new Date()) +df.format(Math.random() * 1000) + ext;
-				newFile = new File(oldFile.getParent(), newName);
-				System.out.println("newFile@HelloMvcFileRenamePolicy = " + newFile);
+			if(dotIndex > -1)
+				ext = oldName.substring(dotIndex); // .txt
+			
+			String newName = sdf.format(new Date()) + df.format(Math.random() * 1000) + ext;
+			newFile = new File(oldFile.getParent(), newName);
+//			System.out.println("newFile@HelloMvcFileRenamePolicy = " + newFile);
 			
 		} while(!createNewFile(newFile));
 		
@@ -37,8 +36,9 @@ public class HelloMvcFileRenamePolicy implements FileRenamePolicy {
 
 	/**
 	 * File#createNewFile
-	 * - 해당 파일이 존재하지 않으면 파일을 생성 후 true를 리턴
-	 * - 해당 파일이 존재하면 IOException 유발
+	 * - 해당파일이 존재하지 않으면 파일을 생성후 true를 리턴
+	 * - 해당파일이 존재하면 IOException 유발
+	 *  
 	 * @param f
 	 * @return
 	 */
@@ -49,4 +49,5 @@ public class HelloMvcFileRenamePolicy implements FileRenamePolicy {
 			return false;
 		}
 	}
+
 }

@@ -21,18 +21,18 @@ import member.model.service.MemberService;
 public class AdminMemberFinderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private MemberService memberService = new MemberService();
-	/** 
+
+	/**
 	 * select * from member where member_id like '%abc%'
 	 * select * from member where member_name like '%박%'
 	 * select * from member where gender like 'M'
 	 * 
 	 * -> select * from member where # like ?
 	 * 
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 1. 사용자 입력값 처리
-		String searchType = request.getParameter("searchType"); // member_id, member_name gender
+		// 1. 사용자입력값처리
+		String searchType = request.getParameter("searchType"); // member_id member_name gender
 		String searchKeyword = request.getParameter("searchKeyword");
 		Map<String, String> param = new HashMap<>();
 		param.put("searchType", searchType);
@@ -41,12 +41,13 @@ public class AdminMemberFinderServlet extends HttpServlet {
 		
 		// 2. 업무로직
 		List<Member> list = memberService.findBy(param);
+		System.out.println("list = " + list);
 		
-		// 3. view단 처리
+		// 3. view단처리
 		request.setAttribute("list", list);
-		request
-			.getRequestDispatcher("/WEB-INF/views/admin/memberList.jsp")
+		request.getRequestDispatcher("/WEB-INF/views/admin/memberList.jsp")
 			.forward(request, response);
+	
 	}
 
 }

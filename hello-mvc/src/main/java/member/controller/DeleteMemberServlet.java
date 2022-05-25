@@ -39,8 +39,8 @@ public class DeleteMemberServlet extends HttpServlet {
 		
 				HttpSession session = request.getSession();
 				Member member = (Member) session.getAttribute("member");
-
-				int result = memberService.deleteMember(member);	
+				String memberId = member.getMemberId();
+				int result = memberService.deleteMember(memberId);	
 				
 				if(session != null) {
 					session.invalidate();			

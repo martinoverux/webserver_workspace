@@ -1,6 +1,10 @@
 package member.model.service;
 
-import static common.JdbcTemplate.*;
+import static common.JdbcTemplate.close;
+import static common.JdbcTemplate.commit;
+import static common.JdbcTemplate.getConnection;
+import static common.JdbcTemplate.rollback;
+
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
@@ -10,16 +14,15 @@ import member.model.dto.Member;
 
 /**
  * 
- * 1. connection 생성
- * 2. dao 요청(connection)
- * 3. dml 경우 transaction 처리
- * 4. connection 반환
- * 5. controller로 값 반환 처리
- *
+ * 1. connection생성
+ * 2. dao요청(connection)
+ * 3. dml경우 transaction처리
+ * 4. connection반환
+ * 5. controller로 값 반환처리
  */
 public class MemberService {
-	
-	public static final int NUM_PER_PAGE = 10; // 한 페이지에 표시할 콘텐츠 수
+
+	public static final int NUM_PER_PAGE = 10; // 한페이지에 표시할 컨텐츠수
 	private MemberDao memberDao = new MemberDao();
 	
 	public Member findByMemberId(String memberId) {
@@ -28,7 +31,16 @@ public class MemberService {
 		close(conn);
 		return member;
 	}
-
+	
+	/**
+	 * 1. Connection객체 생성
+	 * 2. dao요청
+	 * 3. 트랜잭션처리
+	 * 4. Connection객체 반환
+	 * 
+	 * @param member
+	 * @return
+	 */
 	public int insertMember(Member member) {
 		int result = 0;
 		Connection conn = getConnection();
@@ -37,38 +49,46 @@ public class MemberService {
 			commit(conn);
 		} catch (Exception e) {
 			rollback(conn);
-			throw e; // controller에게 전달
+			throw e; // controller에게 통보용!
 		} finally {
-			close(conn);
+			close(conn);			
 		}
 		return result;
 	}
 
 	public int updateMember(Member member) {
 		int result = 0;
+		// 1. Connection객체 생성
 		Connection conn = getConnection();
 		try {
+			// 2. dao 요청
 			result = memberDao.updateMember(conn, member);
+			// 3. 트랜잭션 처리
 			commit(conn);
 		} catch (Exception e) {
 			rollback(conn);
-			throw e; // controller에게 전달
+			throw e; // controller 통보용
 		} finally {
+			// 4. Connection객체 반환
 			close(conn);
 		}
 		return result;
 	}
 
-	public int deleteMember(Member member) {
+	public int deleteMember(String memberId) {
 		int result = 0;
+		// 1. Connection객체 생성
 		Connection conn = getConnection();
 		try {
-			result = memberDao.deleteMember(conn, member);
+			// 2. dao 요청
+			result = memberDao.deleteMember(conn, memberId);
+			// 3. 트랜잭션 처리
 			commit(conn);
 		} catch (Exception e) {
 			rollback(conn);
-			throw e; // controller에게 전달
+			throw e; // controller 통보용
 		} finally {
+			// 4. Connection객체 반환
 			close(conn);
 		}
 		return result;
@@ -82,7 +102,7 @@ public class MemberService {
 			commit(conn);
 		} catch (Exception e) {
 			rollback(conn);
-			throw e; // controller에게 전달
+			throw e;
 		} finally {
 			close(conn);
 		}
@@ -104,7 +124,7 @@ public class MemberService {
 			commit(conn);
 		} catch (Exception e) {
 			rollback(conn);
-			throw e; 
+			throw e;
 		} finally {
 			close(conn);
 		}
@@ -124,9 +144,5 @@ public class MemberService {
 		close(conn);
 		return totalContents;
 	}
-
-
-
-
 
 }

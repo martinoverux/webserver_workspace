@@ -16,20 +16,21 @@ public class SessionAttributeManager implements HttpSessionAttributeListener {
      * Default constructor. 
      */
     public SessionAttributeManager() {
+        // TODO Auto-generated constructor stub
     }
 
 	/**
      * @see HttpSessionAttributeListener#attributeAdded(HttpSessionBindingEvent)
      */
     public void attributeAdded(HttpSessionBindingEvent se)  { 
-    	String name = se.getName();
-    	Object value = se.getValue();
-    	System.out.println("> 세션 속성 추가! " + name + " = " + value);
-    	
-    	// 로그인한 사용자에 대한 별도처리
-    	if("loginMember".equals(name)) {
-    		// 사용자 로그인 내역 관리
-    	}
+         String name = se.getName();
+         Object value = se.getValue();
+         System.out.println("> 세션 속성 추가! " + name + " = " + value);
+         
+         // 로그인한 사용자에 대한 별도처리
+         if("loginMember".equals(name)) {
+        	 // 사용자 로그인 내역 관리 
+         }
     }
 
 	/**
@@ -37,14 +38,12 @@ public class SessionAttributeManager implements HttpSessionAttributeListener {
      */
     public void attributeRemoved(HttpSessionBindingEvent se)  { 
     	String name = se.getName();
-    	Object value = se.getValue();
-    	System.out.println("> 세션 속성 제거! " + name + " = " + value);
-    	
-    	// 로그아웃한 사용자에 대한 별도처리
-    	if("loginMember".equals(name)) {
-    		// 사용자 로그아웃 내역 관리
-    	}
-    	
+        Object value = se.getValue();
+        System.out.println("> 세션 속성 제거! " + name + " = " + value);
+    	// 로그인한 사용자에 대한 별도처리
+        if("loginMember".equals(name)) {
+       	 
+        }
     }
 
 	/**
@@ -52,8 +51,8 @@ public class SessionAttributeManager implements HttpSessionAttributeListener {
      */
     public void attributeReplaced(HttpSessionBindingEvent se)  { 
     	String name = se.getName();
-    	Object value = se.getValue();
-    	System.out.println("> 세션 속성 대체! " + name + " = " + value);
+        Object value = se.getValue();
+        System.out.println("> 세션 속성 대체! " + name + " = " + value);
     }
 	
 }

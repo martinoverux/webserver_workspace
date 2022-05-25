@@ -20,12 +20,11 @@ public class MemberLogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 1. session 객체 가져오기
-		// session 객체가 존재하지 않으면 null을 리턴.
+		// 1. session객체 가져오기
+		// session객체가 존재하지 않으면, null을 리턴.
 		HttpSession session = request.getSession(false);
-		if(session != null) {
-			session.invalidate();			
-		}
+		if(session != null)
+			session.invalidate();
 		
 		// 2. redirect
 		response.sendRedirect(request.getContextPath() + "/");

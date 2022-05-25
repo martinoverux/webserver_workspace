@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" isErrorPage="true" %>
 <%
-	// isErrorPage = "true" 속성 추가 시 발생한 예외객체에 선언없이 접근 가능
+	// isErrorPage="true" 속성 추가시 발생한 예외객체에 선언없이 접근가능
 	String msg = exception.getMessage();
-%>    
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,16 +13,13 @@
 body {
 	text-align: center;
 }
-
 h1 {
 	margin: 10px 0;
-	font-size: 50vw;
+	font-size: 65vw;
 }
-
 p {
 	color: red;
 }
-
 </style>
 </head>
 <body>

@@ -7,27 +7,27 @@
 /**
 * boardEnrollFrm 유효성 검사
 */
-window.onload = () => {
-document.boardEnrollFrm.onsubmit = (e) => {
-	const frm = e.target;
-	//제목을 작성하지 않은 경우 폼제출할 수 없음.
-	const titleVal = frm.title.value.trim(); // trim() - 좌우 공백 제거
-	if(!/^.+$/.test(titleVal)){
-		alert("제목을 작성해주세요.");
-		return false;
+window.onload = () => {	
+	document.boardEnrollFrm.onsubmit = (e) => {
+		const frm = e.target;
+		//제목을 작성하지 않은 경우 폼제출할 수 없음.
+		const titleVal = frm.title.value.trim(); // 좌우공백
+		if(!/^.+$/.test(titleVal)){
+			alert("제목을 작성해주세요.");
+			frm.title.select();
+			return false;
+		}		
+						   
+		//내용을 작성하지 않은 경우 폼제출할 수 없음.
+		const contentVal = frm.content.value.trim();
+		if(!/^(.|\n)+$/.test(contentVal)){
+			alert("내용을 작성해주세요.");
+			frm.content.select();
+			return false;
+		}
 	}
-	
-	//내용을 작성하지 않은 경우 폼제출할 수 없음.
-	const contentVal = frm.content.value.trim(); // trim() - 좌우 공백 제거
-	if(!/^(.|\n)+$/.test(contentVal)){
-		alert("글의 내용을 작성해주세요.");
-		frm.content.select();
-		return false;
-	}
-	//return true;  생략 가능 
 }
-	
-}
+
 </script>
 <section id="board-container">
 <h2>게시판 작성</h2>
@@ -44,7 +44,7 @@ document.boardEnrollFrm.onsubmit = (e) => {
 	<tr>
 		<th>작성자</th>
 		<td>
-			<input type="text" name="writer" value="<%= loginMember.getMemberId() %>" readonly/>
+			<input type="text" name="memberId" value="<%= loginMember.getMemberId() %>" readonly/>
 		</td>
 	</tr>
 	<tr>
