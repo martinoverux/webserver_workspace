@@ -1,16 +1,18 @@
 package board.controller;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import board.model.dto.Attachment;
 import board.model.service.BoardService;
 
 /**
@@ -29,6 +31,14 @@ public class BoardDeleteServlet extends HttpServlet {
 			int boardNo = Integer.parseInt(request.getParameter("boardNo"));
 			
 			//2. 서비스로직호출
+			//2.1. 첨부파일 삭제
+			String deleteDirectory = getServletContext().getRealPath("/upload/board");
+			List<Attachment> attachments = boardService.findAttachmentByBoardNo(boardNo);
+			for(Attachment attach : attachments) {
+				File deleteFile = new File(deleteDirectory, attach.getRenamedFilename());
+				deleteFile.delete();
+			}
+			//2.2. 게시글 삭제
 			int result = boardService.deleteBoard(boardNo);
 			
 			//3. 리다이렉트 처리
@@ -36,6 +46,7 @@ public class BoardDeleteServlet extends HttpServlet {
 			session.setAttribute("msg", "게시글 삭제가 성공적으로 처리되었습니다.");
 			response.sendRedirect(request.getContextPath() + "/board/boardList");			
 			
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

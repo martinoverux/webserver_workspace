@@ -120,4 +120,11 @@ public class BoardService {
 		}
 		return result;
 	}
+
+	public List<Attachment> findAttachmentByBoardNo(int boardNo) {
+		Connection conn = getConnection();
+		List<Attachment> attachments = boardDao.findAttachmentByBoardNo(conn, boardNo); // attachment 테이블 조회
+		close(conn);
+		return attachments;
+	}
 }
