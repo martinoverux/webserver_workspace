@@ -142,10 +142,10 @@ public class MemberDao {
 	public int deleteMember(Connection conn, String memberId) {
 		int result = 0;
 		PreparedStatement pstmt = null;
-		String query = prop.getProperty("deleteMember"); 
+		String sql = prop.getProperty("deleteMember"); 
 
 		try {
-			pstmt = conn.prepareStatement(query);
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, memberId);
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {

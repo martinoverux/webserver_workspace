@@ -55,6 +55,25 @@
 			</th>
 			<% } %>
 		</tr>
+		<form 
+		name="boardDelFrm" 
+		action="<%= request.getContextPath() %>/board/boardDelete"
+		method="POST">
+			<input type="hidden" name="boardNo" value="<%= board.getNo() %>" />
+		</form>
+		<script>
+		/**
+		* POST /board/boardDelete
+		* - no 전송
+		* - 저장된 파일도 삭제 : java.io.File
+		*/
+		const deleteBoard = () => {
+			if(confirm("정말로 게시글을 삭제하시겠습니까?")) {
+				document.boardDelFrm.submit();
+			}
+		}
+		</script>
 	</table>
 </section>
+
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>
