@@ -72,7 +72,8 @@ public class MemberLoginServlet extends HttpServlet {
 		}
 		
 		// 4. 응답처리 : 리다이렉트
-		response.sendRedirect(request.getContextPath() + "/");
+		String Referer = request.getHeader("Referer"); // 절대주솟값 http://localhost:9090/mvc/board/<boardlist></boardlist>
+		response.sendRedirect(Referer);
 	}
 
 }

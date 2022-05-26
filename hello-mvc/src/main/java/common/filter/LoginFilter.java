@@ -26,8 +26,6 @@ import member.model.dto.Member;
 	"/board/boardEnroll",
 	"/board/boardUpdate",
 	"/board/boardDelete",
-	"/board/boardList",
-	"/board/boardView",
 })
 public class LoginFilter implements Filter {
 

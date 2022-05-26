@@ -105,7 +105,7 @@ public class BoardEnrollServlet extends HttpServlet {
 			int result = boardService.insertBoard(board);
 			
 			// 5. redirect
-			response.sendRedirect(request.getContextPath() + "/board/boardList");
+			response.sendRedirect(request.getContextPath() + "/board/boardView?no="+ board.getNo());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

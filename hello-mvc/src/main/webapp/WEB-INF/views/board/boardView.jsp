@@ -72,6 +72,11 @@
 				document.boardDelFrm.submit();
 			}
 		}
+		
+		const updateBoard = () => {
+			location.href = "<%= request.getContextPath() %>/board/boardUpdate?no=<%= board.getNo() %>";
+		}
+		
 		</script>
 	</table>
 </section>

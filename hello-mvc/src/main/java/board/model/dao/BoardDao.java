@@ -131,6 +131,9 @@ public class BoardDao {
 		int result = 0;
 		String sql = prop.getProperty("insertAttachment");
 		try {
+			System.out.println("attach.getBoardNo() = " + attach.getBoardNo());
+			System.out.println("attach.getOriginalFilename() = " + attach.getOriginalFilename());
+			System.out.println("attach.getRenamedFilename() = " + attach.getRenamedFilename());
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, attach.getBoardNo());
 			pstmt.setString(2, attach.getOriginalFilename());
@@ -266,6 +269,61 @@ public class BoardDao {
 			result = pstmt.executeUpdate();
 		} catch (Exception e) {
 			throw new BoardException("게시글 첨부파일 삭제 오류", e);
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public int updateBoard(Connection conn, BoardExt board) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateBoard");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, board.getTitle());
+			pstmt.setString(2, board.getContent());
+			pstmt.setInt(3, board.getNo());
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new BoardException("게시글 수정 오류", e);
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public int updateAttachment(Connection conn, Attachment attach) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateAttachment");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, attach.getOriginalFilename());
+			pstmt.setString(2, attach.getRenamedFilename());
+			pstmt.setInt(3, attach.getBoardNo());
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new BoardException("첨부파일 수정 오류", e);
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+
+	public int deleteAttachment(Connection conn, int attachNo) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("deleteAttachment");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, attachNo);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new BoardException("게시글 수정 첨부파일 삭제 오류", e);
 		} finally {
 			close(pstmt);
 		}

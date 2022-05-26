@@ -51,6 +51,7 @@ public class BoardService {
 
 			// 2. board pk 가져오기
 			int no = boardDao.findCurrentBoardNo(conn); // seq_board_no.currval
+			board.setNo(no);
 			System.out.println("방금 등록된 board.no = " + no);
 			
 			// 3. attachment에 등록
@@ -61,7 +62,6 @@ public class BoardService {
 					result = boardDao.insertAttachment(conn, attach);
 				}
 			}
-			
 			commit(conn);
 		} catch(Exception e) {
 			rollback(conn);
@@ -126,5 +126,46 @@ public class BoardService {
 		List<Attachment> attachments = boardDao.findAttachmentByBoardNo(conn, boardNo); // attachment 테이블 조회
 		close(conn);
 		return attachments;
+	}
+
+	public int updateBoard(BoardExt board) {
+		int result = 0;
+		Connection conn = getConnection();
+		
+		try {
+			result = boardDao.updateBoard(conn, board);
+			System.out.println("getBoardNo()@service = " + board.getNo());
+			int no = board.getNo();
+			List<Attachment> attachments = board.getAttachments();
+			if(attachments != null && !attachments.isEmpty()) {
+				for(Attachment attach : attachments) {
+					attach.setBoardNo(no);
+					result = boardDao.insertAttachment(conn, attach);
+				}
+			}
+			commit(conn);
+		} catch (Exception e) {
+			rollback(conn);
+			throw e;
+		} finally {
+			close(conn);
+		}
+		return result;
+	}
+
+	public int deleteAttachment(int attachNo) {
+		int result = 0;
+		int resultAttach = 0;
+		Connection conn = getConnection();
+		try {
+			resultAttach = boardDao.deleteAttachment(conn, attachNo);
+			commit(conn);
+		} catch (Exception e) {
+			rollback(conn);
+			throw e;
+		} finally {
+			close(conn);
+		}
+		return result;
 	}
 }
