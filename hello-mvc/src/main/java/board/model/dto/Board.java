@@ -78,8 +78,4 @@ public class Board {
 		return "Board [no=" + no + ", title=" + title + ", memberId=" + memberId + ", content=" + content
 				+ ", readCount=" + readCount + ", regDate=" + regDate + "]";
 	}
-	
-	
-	
-	
 }

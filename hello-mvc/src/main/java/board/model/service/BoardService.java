@@ -12,6 +12,7 @@ import java.util.Map;
 import board.model.dao.BoardDao;
 import board.model.dto.Attachment;
 import board.model.dto.Board;
+import board.model.dto.BoardComment;
 import board.model.dto.BoardExt;
 
 public class BoardService {
@@ -76,7 +77,9 @@ public class BoardService {
 		Connection conn = getConnection();
 		BoardExt board = boardDao.findByNo(conn, no); // board테이블 조회
 		List<Attachment> attachments = boardDao.findAttachmentByBoardNo(conn, no); // attachment 테이블 조회
+		List<BoardComment> comments = boardDao.findBoardCommentByBoardNo(conn, no);
 		board.setAttachments(attachments);
+		board.setBoardComments(comments);
 		close(conn);
 		return board;
 	}
@@ -163,6 +166,35 @@ public class BoardService {
 		} catch (Exception e) {
 			rollback(conn);
 			throw e;
+		} finally {
+			close(conn);
+		}
+		return result;
+	}
+
+	public int insertBoardComment(BoardComment bc) {
+		int result = 0;
+		Connection conn = getConnection();
+		try {
+			result = boardDao.insertBoardComment(conn, bc);
+			commit(conn);
+		} catch(Exception e) {
+			rollback(conn);
+			throw e;
+		} finally {
+			close(conn);
+		}
+		return result;
+	}
+
+	public int boardCommentDelete(int commentNo) {
+		Connection conn = getConnection();
+		int result = 0;
+		try {
+			result = boardDao.boardCommentDelete(conn, commentNo);
+			commit(conn);
+		} catch (Exception e) {
+			rollback(conn);
 		} finally {
 			close(conn);
 		}

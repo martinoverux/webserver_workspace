@@ -43,6 +43,4 @@ public class BoardFileDownloadServlet extends HttpServlet {
 		// header 작성
 		HelloMvcUtils.fileDownload(response, saveDirectory, originalFilename, renamedFilename); 
 	}
-
-
 }
