@@ -73,14 +73,7 @@ where
    
 --select * from (select row_number() over(order by enroll_date desc) rnum, m.* from member m) m where rnum between ? and ?;
 
-/*
-1page : 1 ~ 10
-2page : 11 ~ 20
-3page : 21 ~ 30
-...
-11page : 101 ~ 110
-12page : 111 ~ 120
-*/
+
 
 
 --  게시판
@@ -181,4 +174,70 @@ commit;
 
 select * from board order by reg_date desc;
 select * from attachment order by reg_date desc;
+
+-- 댓글 테이블 생성
+create table board_comment (
+    no number,
+    comment_level number default 1, -- 댓글(1) /대댓글(2)
+    member_id varchar2(15),
+    content varchar2(2000),
+    board_no number,
+    comment_ref number, -- 대댓글인 경우에만 참조하는 댓글(댓글인 경우는 null)
+    reg_date date default sysdate,
+    constraint pk_board_comment_no primary key(no),
+    constraint fk_board_comment_member_id foreign key(member_id) references member(member_id) on delete set null,
+    constraint fk_board_comment_board_no foreign key(board_no) references board(no) on delete cascade,
+    constraint fk_board_comment_ref foreign key(comment_ref) references board_comment(no) on delete cascade
+);
+
+create sequence seq_board_comment_no;
+
+select * from board order by no desc;
+
+-- 샘플 데이터 입력 202번
+insert into board_comment
+values(seq_board_comment_no.nextval,  default, 'honggd', '테스트가 흥미롭습니다.', 202, null, sysdate);
+insert into board_comment
+values(seq_board_comment_no.nextval,  default, 'admin', '안녕하세요. 관리자입니다.', 202, null, sysdate);
+insert into board_comment
+values(seq_board_comment_no.nextval,  default, 'qwerty', '한 주가 쏜살같이 지나가네요~', 202, null, sysdate);
+
+select * from board_comment order by no;
+
+-- 대댓글
+insert into board_comment
+values(seq_board_comment_no.nextval,  2, 'sinsa', '안녕', 202, 1, sysdate);
+
+insert into board_comment
+values(seq_board_comment_no.nextval,  2, 'qwerty', '오랜만.', 202, 1, sysdate);
+
+insert into board_comment
+values(seq_board_comment_no.nextval,  2, 'qwerty', '안녕하세요~', 202, 2, sysdate);
+
+
+-- 계층형 쿼리
+-- 부모행 no - 댓글
+-- 자식행 comment_ref - 대댓글
+select 
+        level,
+        lpad('  ' , (level-1) * 5) || bc.content,
+        bc.*
+from
+        board_comment bc
+where
+        board_no = 202
+start with comment_level = 1
+connect by comment_ref =  prior no;
+
+-- kh 계정에서 관리자 - 관리사원정보 계층형 쿼리
+select * from employee;
+select 
+        level,
+        lpad('  ' , (level-1) * 6) || e.emp_id "계층",
+        e.*
+from
+        employee e
+start with emp_id  = 200
+connect by manager_id = prior emp_id;
+
 
