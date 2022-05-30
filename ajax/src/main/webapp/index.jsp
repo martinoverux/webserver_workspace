@@ -16,7 +16,7 @@
 	
 	<h2>jQuery.ajax</h2>
 	<ul>
-		<li><a href="<%= request.getContextPath() %>/jquery/text.jsp">순수 js로 XMLHttpRequest 제어하기</a></li>	
+		<li><a href="<%= request.getContextPath() %>/jquery/text.jsp">text</a></li>	
 	</ul>
 </body>
 </html>
