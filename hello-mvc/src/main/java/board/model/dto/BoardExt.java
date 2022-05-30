@@ -5,11 +5,28 @@ import java.util.List;
 public class BoardExt extends Board {
 
 	private int attachCount;
+	private int commentCount;
 	private List<Attachment> attachments; 
 	private List<BoardComment> comments;
 
 	public int getAttachCount() {
 		return attachCount;
+	}
+
+	public int getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
+	}
+
+	public List<BoardComment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<BoardComment> comments) {
+		this.comments = comments;
 	}
 
 	public void setAttachCount(int attachCount) {

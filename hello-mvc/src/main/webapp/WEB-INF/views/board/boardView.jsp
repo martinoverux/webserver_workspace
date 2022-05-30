@@ -219,7 +219,18 @@ document.querySelectorAll(".btn-reply").forEach((button) => {
 		
 		// 생성된 tr 추가
 		parent.insertBefore(tr, ref);
+		// console.log(tr);
+		// console.dir(td);
+
+		// 생성된 tr 추가
+		// parent.insertBefore(tr, ref);
 		
+		// target.insertAdjacentElement(position, newNode)
+		// 1. beforebegin target의 이전 형제요소로 추가
+		// 2. afterbegin target의 시작태그 다음에 자식요소로 추가
+		// 3. beforeend target의 종료태그 직전에 자식요소로 추가
+		// 4. afterend target의 다음 형제요소로 추가
+
 		// 이벤트핸들링은 1회만 허용.
 		e.target.onclick = null;
 		

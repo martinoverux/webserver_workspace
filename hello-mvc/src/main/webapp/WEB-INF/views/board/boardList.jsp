@@ -40,6 +40,10 @@
 				<td><%= board.getNo() %></td>
 				<td>
 					<a href="<%= request.getContextPath() %>/board/boardView?no=<%= board.getNo() %>"><%= board.getTitle() %></a>
+					<%-- 댓글 갯수 표시 --%>
+					<% if(board.getCommentCount() > 0) { %>
+					(<%= board.getCommentCount() %>)
+					<% } %>
 				</td>
 				<td><%= board.getMemberId() %></td>
 				<td><%= board.getRegDate() %></td>

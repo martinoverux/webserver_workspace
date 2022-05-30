@@ -240,4 +240,16 @@ from
 start with emp_id  = 200
 connect by manager_id = prior emp_id;
 
+-- 상향식
+select
+        level,
+        emp_name
+from 
+        employee
+where
+        level > 1
+start with emp_name = '윤은해'
+connect by prior manager_id = emp_id;
 
+
+commit;
