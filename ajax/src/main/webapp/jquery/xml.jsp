@@ -124,10 +124,57 @@ table img {width: 100px;}
 		<tbody></tbody>
 	</table>
 	<script>
+	/** @실습문제 - 페이지 로딩이 완료되면 어제 날짜로 박스 오피스 조회를 자동으로 처리
+	*
+	*/
+	function plusZeroMinusOne(date) {
+            const f = function(n) {
+                return (n < 10) ? '0' + n : n;
+            };
+            return `\${date.getFullYear()}\${f(date.getMonth() + 1)}\${f(date.getDate() - 1)}`;
+	    }
+	
+	document.addEventListener("DOMContentLoaded", function(){
+		const today = new Date();
+		const yesterday = plusZero(today);
+
+		$.ajax({
+			url : "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml",
+			data : {
+				key : 'a86b5853cff064e3d663c935eed2a959',
+				targetDt : yesterday
+			},
+			success(doc){
+	
+				const root = doc.querySelector(":root");
+	
+				let dest = root.lastElementChild;
+				console.log(dest);
+				const movies = [...dest.children];
+				console.log(movies);
+				const tbody =document.querySelector("#tbl-daily-boxoffice tbody");
+				tbody.innerHTML = "";
+				
+				movies.forEach((movie) => {
+					
+					const rank = movie.getElementsByTagName("rank")[0].textContent;
+					const movieNm = movie.getElementsByTagName("movieNm")[0].textContent;
+					const audiAcc = movie.getElementsByTagName("audiAcc")[0].textContent;
+					
+					tbody.innerHTML += `<tr>
+						<td>\${rank}</td>
+						<td>\${movieNm}</td>
+						<td>\${audiAcc}</td>
+					</tr>`;
+				});
+			},
+			error : console.log
+		}); 
+	});
+	
 	targetDt.addEventListener('change', (e) =>{
 		const val = e.target.value.replace(/-/g, "");
 		console.log(val);
-		
 		$.ajax({
 			url : "http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.xml",
 			data : {
@@ -135,7 +182,28 @@ table img {width: 100px;}
 				targetDt : val
 			},
 			success(doc){
-				console.log(doc);
+	
+				const root = doc.querySelector(":root");
+	
+				let dest = root.lastElementChild;
+				console.log(dest);
+				const movies = [...dest.children];
+				console.log(movies);
+				const tbody =document.querySelector("#tbl-daily-boxoffice tbody");
+				tbody.innerHTML = "";
+				
+				movies.forEach((movie) => {
+					
+					const rank = movie.getElementsByTagName("rank")[0].textContent;
+					const movieNm = movie.getElementsByTagName("movieNm")[0].textContent;
+					const audiAcc = movie.getElementsByTagName("audiAcc")[0].textContent;
+					
+					tbody.innerHTML += `<tr>
+						<td>\${rank}</td>
+						<td>\${movieNm}</td>
+						<td>\${audiAcc}</td>
+					</tr>`;
+				});
 			},
 			error : console.log
 		});
