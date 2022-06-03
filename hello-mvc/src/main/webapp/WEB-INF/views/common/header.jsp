@@ -1,4 +1,3 @@
-
 <%@page import="member.model.dto.MemberRole"%>
 <%@page import="member.model.dto.Member"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -31,6 +30,7 @@
 <meta charset="UTF-8">
 <title>Hello MVC</title>
 <link rel="stylesheet" href="<%=request.getContextPath() %>/css/style.css" />
+<script src="<%= request.getContextPath() %>/js/jquery-3.6.0.js"></script>
 <script>
 window.onload = () => {
 <% if(msg != null){ %>
@@ -111,6 +111,7 @@ window.onload = () => {
 					<li class="home"><a href="<%= request.getContextPath() %>">Home</a></li>
 					<li class="notice"><a href="#">공지사항</a></li>
 					<li class="board"><a href="<%= request.getContextPath() %>/board/boardList">게시판</a></li>
+					<li class="board"><a href="<%= request.getContextPath() %>/photo/photoList">사진 게시판</a></li>
 					<% if(loginMember != null && loginMember.getMemberRole() == MemberRole.A) { %>
 						<li class="admin"><a href="<%= request.getContextPath() %>/admin/memberList">회원관리</a></li>
 					<% } %>
