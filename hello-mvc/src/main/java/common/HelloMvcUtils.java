@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 public class HelloMvcUtils {
 	
 	public static void main(String[] args) {
-		System.out.println(encrypt("asdf456!", "admin"));
+		System.out.println(encrypt("asdf456!", "leesunsin"));
 	}
 	
 	/**

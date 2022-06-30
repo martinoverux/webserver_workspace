@@ -33,7 +33,7 @@
 			for(int i = 0; i < attachments.size(); i++ ){
 				Attachment attach = attachments.get(i);
 	%>
-			<img src="<%= request.getContextPath() %>/images/file.png" widht="12px" alt="첨부파일 이미지" />
+			<img src="<%= request.getContextPath() %>/images/file.png" width="12px" alt="첨부파일 이미지" />
 			<%= attach.getOriginalFilename() %> 
 			<input type="checkbox" name="delFile" id="delFile<%= i + 1 %>" value="<%= attach.getNo() %>" />
 			<label for="delFile<%= i + 1 %>">삭제</label>

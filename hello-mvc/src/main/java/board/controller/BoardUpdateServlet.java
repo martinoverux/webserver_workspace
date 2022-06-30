@@ -81,6 +81,7 @@ public class BoardUpdateServlet extends HttpServlet {
 			}
 			
 			int result = boardService.updateBoard(board);
+			System.out.println("result = " + result);
 			
 			// 첨부파일 삭제 처리
 			if(delFiles != null) {
@@ -99,7 +100,7 @@ public class BoardUpdateServlet extends HttpServlet {
 			}
 			
 			
-			
+			request.setAttribute("msg", "게시글 수정 실패");
 			response.sendRedirect(request.getContextPath() + "/board/boardView?no=" + board.getNo());		
 		} catch (Exception e) {
 			e.printStackTrace();

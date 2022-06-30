@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="student">
+	<select id="selectOne" parameterType="_int" resultType="com.kh.student.model.dto.Student">
+	select * from student where deleted_at is null and no = #{no}
+	</select>
+	
+	<!-- <select id="selectOneMap" resultType="map"> -->
+	<select id="selectOneMap" resultMap="studentMap"> 
+		select * from student where deleted_at is null and no = #{no}
+	</select>
+	<resultMap type="map" id="studentMap">
+		<id column="NO" property="no" /> <!-- id는 pk 컬럼 전용  -->
+		<result column="NAME" property="name" />
+		<result column="TEL" property="tel" />
+	</resultMap>
+	
+	<!-- parameterType은 DML/DQL 둘 다 안 적어도 자동 적용됨 -->
+	<!-- DML인 경우  resultType을 적지 않는다. -->
+	<insert id="insertStudent" parameterType="student">
+		insert into student(no, name, tel) values(seq_student_no.nextval, #{name}, #{tel})
+	</insert>
+	
+	<insert id="insertStudentMap" parameterType="map">
+		insert into student(no, name, tel) values(seq_student_no.nextval, #{name}, #{tel})
+	</insert>
+	
+	<update id="updateStudent">
+		update student set tel = #{tel}, updated_at = sysdate where deleted_at is null and no = #{no}
+	</update>
+	
+	<update id="deleteStudent">
+		update student set deleted_at = sysdate where no = #{no}
+	</update>
+	
+	<!-- DQL인 경우 resultType 속성을 반드시 작성해야 한다. -->
+	<select id="getTotalCount" resultType="_int">
+		select count(*) from student where deleted_at is null
+	</select>
+	
+</mapper>

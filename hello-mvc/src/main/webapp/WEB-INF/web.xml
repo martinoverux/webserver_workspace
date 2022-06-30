@@ -12,7 +12,15 @@
   <listener>
   	<listener-class>common.listener.SessionCounterListener</listener-class>
   </listener>
-  
+<!--  <servlet>
+ 	<servlet-name>TestServlet</servlet-name>
+ 	<servlet-class>com.kh.test.controller.TestContoller</servlet-class>
+ </servlet>
+ 
+ <servlet-mapping>
+ 	<servlet-name>TestServlet</servlet-name>
+ 	<url-pattern>/test.do</url-pattern>
+ </servlet-mapping> -->
  <!--  <filter>
   	<filter-name>LogFilter</filter-name>
   	<filter-class>common.filter.LogFilter</filter-class>
